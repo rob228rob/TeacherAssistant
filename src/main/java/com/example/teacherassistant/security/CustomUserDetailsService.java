@@ -30,7 +30,5 @@ public class CustomUserDetailsService implements UserDetailsService {
         } catch (TeacherNotFoundException e) {
             throw new UsernameNotFoundException("Teacher with phone: " + phoneNumber + " not found");
         }
-
-
     }
 }

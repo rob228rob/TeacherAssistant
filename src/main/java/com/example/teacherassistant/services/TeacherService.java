@@ -1,12 +1,16 @@
 package com.example.teacherassistant.services;
 
-import com.example.teacherassistant.dtos.TeacherDTO;
+import com.example.teacherassistant.dtos.RegisterTeacherDTO;
 import com.example.teacherassistant.entities.Student;
 import com.example.teacherassistant.entities.Teacher;
 import com.example.teacherassistant.myExceptions.TeacherNotFoundException;
 import com.example.teacherassistant.repositories.TeacherRepository;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -16,7 +20,7 @@ import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
-public class TeacherService {
+public class TeacherService implements UserDetailsService {
 
     private final TeacherRepository teacherRepository;
 
@@ -43,8 +47,8 @@ public class TeacherService {
         return teacher.getStudents();
     }
 
-    public Teacher saveTeacher(TeacherDTO teacherDTO) {
-        Teacher teacher = modelMapper.map(teacherDTO, Teacher.class);
+    public Teacher saveTeacher(RegisterTeacherDTO registerTeacherDTO) {
+        Teacher teacher = modelMapper.map(registerTeacherDTO, Teacher.class);
         teacher.setPassword(passwordEncoder.encode(teacher.getPassword()));
         return teacherRepository.save(teacher);
     }
@@ -53,13 +57,13 @@ public class TeacherService {
         teacherRepository.deleteById(id);
     }
 
-    public boolean updateTeacher(long id, TeacherDTO teacherDTO) {
-        if (teacherRepository.existsByPhoneNumber(teacherDTO.getPhoneNumber())) {
+    public boolean updateTeacher(long id, RegisterTeacherDTO registerTeacherDTO) {
+        if (teacherRepository.existsByPhoneNumber(registerTeacherDTO.getPhoneNumber())) {
             return false;
         }
-        Teacher teacher = modelMapper.map(teacherDTO, Teacher.class);
+        Teacher teacher = modelMapper.map(registerTeacherDTO, Teacher.class);
         teacher.setId(id);
-        teacher.setPassword(passwordEncoder.encode(teacherDTO.getPassword()));
+        teacher.setPassword(passwordEncoder.encode(registerTeacherDTO.getPassword()));
         teacherRepository.save(teacher);
 
         return true;
@@ -81,5 +85,19 @@ public class TeacherService {
         teacherRepository.deleteById(id);
 
         return true;
+    }
+
+    @Override
+    public UserDetails loadUserByUsername(String phoneNumber) throws UsernameNotFoundException {
+        try {
+            Teacher teacher = findTeacherByPhone(phoneNumber);
+
+            return User.builder()
+                    .username(teacher.getPhoneNumber())
+                    .password(teacher.getPassword())
+                    .build();
+        } catch (TeacherNotFoundException e) {
+            throw new UsernameNotFoundException(e.getMessage());
+        }
     }
 }

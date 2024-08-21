@@ -1,11 +1,11 @@
 package com.example.teacherassistant.controllers;
 
-import com.example.teacherassistant.dtos.TeacherDTO;
+import com.example.teacherassistant.dtos.RegisterTeacherDTO;
 import com.example.teacherassistant.entities.Teacher;
 import com.example.teacherassistant.services.TeacherService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,18 +17,10 @@ import java.util.List;
 public class TeacherController {
 
     private final TeacherService teacherService;
+
+    private final AuthenticationManager authenticationManager;
+
     private final PasswordEncoder passwordEncoder;
-
-    @PostMapping("/register")
-    public ResponseEntity<?> registerTeacher(@RequestBody TeacherDTO teacherDTO) {
-        if (teacherService.existsByPhoneNumber(teacherDTO.getPhoneNumber())) {
-            return ResponseEntity.status(HttpStatus.CONFLICT).body("Teacher with this phone number already exists");
-        }
-
-        teacherDTO.setPassword(passwordEncoder.encode(teacherDTO.getPassword()));
-        Teacher newTeacher = teacherService.saveTeacher(teacherDTO);
-        return ResponseEntity.ok(newTeacher);
-    }
 
     @GetMapping("/{id}")
     public ResponseEntity<?> getTeacherById(@PathVariable long id) {
@@ -46,8 +38,8 @@ public class TeacherController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<?> updateTeacher(@PathVariable long id, @RequestBody TeacherDTO teacherDTO) {
-        return teacherService.updateTeacher(id, teacherDTO)
+    public ResponseEntity<?> updateTeacher(@PathVariable long id, @RequestBody RegisterTeacherDTO registerTeacherDTO) {
+        return teacherService.updateTeacher(id, registerTeacherDTO)
                 ? ResponseEntity.ok().build()
                 : ResponseEntity.notFound().build();
     }
