@@ -4,24 +4,92 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sign Up</title>
-    <link rel="stylesheet" href="/styles/style.css">
-    <script src="/scripts/signup.js" defer></script>
+    <link rel="stylesheet" href="/css/signup.css">
+    <script src="/scripts/login.js" defer></script>
 </head>
 <body>
 <div class="container">
     <h2>Sign Up</h2>
-    <form action="/auth/register" method="post">
+
+    <!-- Если есть ошибка, выводим ее -->
+    <div id="error-message" style="display: none;" class="error-message">
+        <p id="error-text"></p>
+    </div>
+
+    <form id="signup-form">
+        <div class="form-group">
+            <label for="name">First Name</label>
+            <input type="text" id="name" name="name" required>
+        </div>
+        <div class="form-group">
+            <label for="surname">Last Name</label>
+            <input type="text" id="surname" name="surname" required>
+        </div>
         <div class="form-group">
             <label for="phoneNumber">Phone Number</label>
             <input type="text" id="phoneNumber" name="phoneNumber" required>
         </div>
         <div class="form-group">
-            <label for="password">Password</label>
-            <input type="password" id="password" name="password" required>
+            <label for="primarySubject">Primary Subject</label>
+            <input type="text" id="primarySubject" name="primarySubject" required>
         </div>
-        <button type="submit">Sign Up</button>
+        <div class="form-group">
+            <label for="password">Password</label>
+            <div class="password-container">
+                <input type="password" id="password" name="password" required>
+                <button type="button" id="togglePassword" class="toggle-password">
+                    <!-- Иконка SVG -->
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                        <path d="M12 5C6.48 5 2 12 2 12s4.48 7 10 7 10-7 10-7-4.48-7-10-7zm0 12c-2.21 0-4.21-1.27-5.23-3.23l10.46-5.2C16.19 8.27 14.19 9.5 12 9.5c-2.48 0-4.5-2.02-4.5-4.5S9.52 0 12 0s4.5 2.02 4.5 4.5c0 1.99-1.49 3.63-3.4 4.07l-6.78 4.23C7.21 16.73 9.21 18 12 18z"/>
+                    </svg>
+                </button>
+            </div>
+        </div>
+        <button type="button" id="submit-button">Sign Up</button>
         <p>Already have an account? <a href="/login">Login here</a></p>
     </form>
 </div>
+
+<script>
+    document.getElementById('submit-button').addEventListener('click', function(event) {
+        event.preventDefault(); // Предотвращаем стандартное действие формы
+
+        // Собираем данные из формы
+        const formData = {
+            name: document.getElementById('name').value,
+            surname: document.getElementById('surname').value,
+            phoneNumber: document.getElementById('phoneNumber').value,
+            primarySubject: document.getElementById('primarySubject').value,
+            password: document.getElementById('password').value
+        };
+
+        // Отправляем данные на сервер
+        fetch('/auth/register', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                // 'X-CSRF-TOKEN': 'YOUR_CSRF_TOKEN' // Добавьте этот заголовок, если используете CSRF защиту
+            },
+            body: JSON.stringify(formData)
+        })
+            .then(response => {
+                if (response.ok) {
+                    window.location.href = '/home'; // Перенаправление при успешной регистрации
+                } else {
+                    return response.json().then(data => {
+                        // Обработка ошибки
+                        document.getElementById('error-message').style.display = 'block';
+                        document.getElementById('error-text').textContent = data.error || 'An error occurred';
+                    });
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                document.getElementById('error-message').style.display = 'block';
+                document.getElementById('error-text').textContent = 'An error occurred';
+            });
+    });
+</script>
+
 </body>
 </html>

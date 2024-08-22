@@ -1,0 +1,147 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
+}
+
+body {
+    background: url('https://images.unsplash.com/photo-1724311564236-e14a0fd831ef?q=80&w=987&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D') no-repeat center center fixed; /* Фоновое изображение */
+    background-size: cover; /* Обеспечивает, что фон будет покрывать весь экран */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    color: #333;
+}
+
+.container {
+    background-color: rgba(255, 255, 255, 0.18); /* Полупрозрачный белый фон для контейнера */
+    padding: 2rem;
+    border-radius: 12px; /* Сглаженные углы */
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+    max-width: 400px;
+    width: 100%;
+    text-align: center;
+    /* backdrop-filter: blur(10px); /* Размытие фона за контейнером для улучшения читаемости */
+}
+
+h2 {
+    margin-bottom: 1.5rem;
+    font-size: 2rem;
+    color: #333;
+}
+
+.form-group {
+    margin-bottom: 1.5rem;
+    text-align: left;
+}
+
+label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+    color: #555;
+}
+
+input[type="text"],
+input[type="password"] {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 1rem;
+    color: #333;
+    background-color: #f9f9f9;
+    transition: border-color 0.3s ease, background-color 0.3s ease;
+}
+
+input[type="text"]:focus,
+input[type="password"]:focus {
+    border-color: #66a6ff;
+    background-color: #fff;
+    outline: none;
+}
+
+button {
+    width: 100%;
+    padding: 0.75rem;
+    background: linear-gradient(135deg, #a8edea, #fed6e3); /* Нежный градиент с голубыми и розовыми оттенками */
+    border: none;
+    border-radius: 8px;
+    color: #333;
+    font-size: 1.1rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+button:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.01);
+}
+
+p {
+    margin-top: 1.5rem;
+    color: #555;
+}
+
+a {
+    color: #66a6ff;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+.password-container {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.password-container input[type="password"] {
+    width: 100%;
+    padding-right: 40px; /* Оставляем место для кнопки */
+}
+
+.password-container .toggle-password {
+    position: absolute;
+    right: 10px; /* Отступ от правого края */
+    top: 50%;
+    transform: translateY(-50%); /* Центрируем кнопку по вертикали */
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    outline: none;
+}
+
+.password-container .toggle-password svg {
+    fill: #333;
+    width: 20px; /* Размер иконки */
+    height: 20px; /* Размер иконки */
+}
+
+.password-container .toggle-password:hover svg {
+    fill: #000; /* Цвет иконки при наведении */
+}
+
+/* Адаптивная стилизация */
+@media (max-width: 768px) {
+    .container {
+        padding: 1.5rem;
+    }
+
+    input[type="text"],
+    input[type="password"] {
+        padding: 0.65rem;
+    }
+
+    button {
+        padding: 0.65rem;
+        font-size: 1rem;
+    }
+}

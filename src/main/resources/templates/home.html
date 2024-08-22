@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Home Page</title>
     <!-- Подключаем внешний CSS файл -->
-    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/home.css">
 </head>
 <body>
 <header>
@@ -13,19 +13,41 @@
         <ul>
             <li><a href="/home">Home</a></li>
             <li><a href="/profile">Profile</a></li>
+            <li><a href="/settings">Settings</a></li>
             <li><a href="/logout">Logout</a></li>
         </ul>
     </nav>
 </header>
 <main>
-    <h1>Welcome to the Home Page!</h1>
-    <p>You have successfully logged in.</p>
-    <p>Your session is active. Enjoy exploring the application!</p>
+    <section class="welcome-section">
+        <h1>Welcome!</h1>
+        <p>You have successfully logged in.</p>
+        <p>Your session is active. Enjoy exploring the application!</p>
+    </section>
+
+    <section class="dashboard">
+        <h2>Dashboard</h2>
+        <div class="card">
+            <h3>Profile</h3>
+            <p>Update your personal information and settings.</p>
+            <a href="/profile" class="btn">Go to Profile</a>
+        </div>
+<!--        <div class="card">-->
+<!--            <h3>Messages</h3>-->
+<!--            <p>Check your latest messages and notifications.</p>-->
+<!--            <a href="/messages" class="btn">View Messages</a>-->
+<!--        </div>-->
+        <div class="card">
+            <h3>Settings</h3>
+            <p>Configure your preferences and account settings.</p>
+            <a href="/settings" class="btn">Go to Settings</a>
+        </div>
+    </section>
 </main>
 <footer>
-    <p>&copy; 2024 Your Application Name. All rights reserved.</p>
+    <p>&copy; 2024 Teacher Assistant. All rights reserved.</p>
 </footer>
 <!-- Подключаем JavaScript файл -->
-<script src="/js/main.js"></script>
+<script src="/scripts/main.js"></script>
 </body>
 </html>
