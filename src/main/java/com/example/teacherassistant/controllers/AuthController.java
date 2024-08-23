@@ -48,16 +48,17 @@ public class AuthController {
                             loginRequest.getPassword()
                     )
             );
-
             SecurityContextHolder.getContext().setAuthentication(authentication);
-            Teacher teacher = teacherService.findTeacherByPhone(loginRequest.getPhoneNumber());
 
-            return ResponseEntity.ok(teacher);
+            var teacher = teacherService.findTeacherByPhone(loginRequest.getPhoneNumber());
+
+            if (teacher.isEmpty()) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Teacher with this phone number does not exist: " + loginRequest.getPhoneNumber());
+            }
+
+            return ResponseEntity.ok().build();
         } catch (BadCredentialsException e) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid phone number or password");
-        } catch (TeacherNotFoundException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }
     }
-
 }

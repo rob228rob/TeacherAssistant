@@ -14,5 +14,7 @@ public interface TeacherRepository extends JpaRepository<Teacher, Long> {
     Optional<Teacher> findByPhoneNumber(String phone);
 
     boolean existsByPhoneNumber(String phone);
+
+    //Long findByPhoneNumber(String phone);
 }
 

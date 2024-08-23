@@ -2,8 +2,10 @@ package com.example.teacherassistant.repositories;
 
 import com.example.teacherassistant.entities.Student;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
+import java.util.Collection;
 import java.util.Optional;
 
 @Repository
@@ -18,4 +20,9 @@ public interface StudentRepository extends JpaRepository<Student, Long> {
     Boolean existsByEmail(String email);
 
     Boolean existsByNameAndSurname(String name, String surname);
+
+    @Query("SELECT s FROM students s WHERE s.teacher.id = :teacherId")
+    Collection<Student> findAllByTeacherId(Long teacherId);
+
+    Collection<Student> findAllByTeacherPhoneNumber(String phoneNumber);
 }

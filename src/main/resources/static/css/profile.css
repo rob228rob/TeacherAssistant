@@ -1,0 +1,128 @@
+/* Убедитесь, что все отступы и маргины у элементов обнулены */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
+}
+
+/* Основной стиль для body и основной контейнер */
+body {
+    background: #f4f7fc; /* Мягкий однотонный фон */
+    color: #333;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+/* Стили для header */
+header {
+    background-color: #2d3e50; /* Темный синий цвет для профессионального вида */
+    padding: 1rem;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Стили для навигации */
+nav ul {
+    list-style-type: none;
+    display: flex;
+    justify-content: flex-end;
+    padding: 0;
+}
+
+nav ul li {
+    margin: 0 1rem;
+}
+
+nav ul li a {
+    color: #fff;
+    text-decoration: none;
+    font-weight: bold;
+    transition: color 0.3s ease;
+}
+
+nav ul li a:hover {
+    color: #ffdd59;
+}
+
+/* Основной контейнер */
+main {
+    flex-grow: 1;
+    padding: 2rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+}
+
+/* Секция профиля */
+.profile-section {
+    width: 100%;
+    max-width: 1200px; /* Ограничение ширины контейнера */
+    margin: 0 auto;
+    text-align: left;
+}
+
+/* Заголовок секции */
+.profile-section h1 {
+    font-size: 2.5rem;
+    color: #2d3e50;
+    margin-bottom: 1.5rem;
+    text-align: center;
+}
+
+/* Стили для таблицы студентов */
+.students-list {
+    width: 100%;
+    overflow-x: auto;
+}
+
+.students-list table {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: #fff;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    border-radius: 12px;
+    margin-bottom: 2rem;
+}
+
+.students-list th, .students-list td {
+    padding: 1rem;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+}
+
+.students-list th {
+    background-color: #2d3e50;
+    color: #fff;
+    font-weight: bold;
+}
+
+.students-list tr:hover {
+    background-color: #f1f1f1;
+}
+
+.students-list td {
+    color: #666;
+}
+
+/* Стили для футера */
+footer {
+    background-color: #2d3e50;
+    color: #fff;
+    text-align: center;
+    padding: 1rem;
+    margin-top: auto;
+    box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Адаптивность */
+@media (max-width: 768px) {
+    .profile-section h1 {
+        font-size: 2rem;
+    }
+
+    .students-list th, .students-list td {
+        padding: 0.75rem;
+    }
+}

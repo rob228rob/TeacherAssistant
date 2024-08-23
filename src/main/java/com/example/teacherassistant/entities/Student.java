@@ -30,7 +30,7 @@ public class Student {
     @Column(name = "email", nullable = true, unique = true)
     private String email;
     
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "teacher_id")
     private Teacher teacher;
 }

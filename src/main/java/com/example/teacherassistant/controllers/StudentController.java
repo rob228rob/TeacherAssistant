@@ -5,6 +5,7 @@ import com.example.teacherassistant.dtos.StudentDTO;
 import com.example.teacherassistant.entities.Student;
 import com.example.teacherassistant.myExceptions.InvalidStudentDataException;
 import com.example.teacherassistant.myExceptions.StudentNotFoundException;
+import com.example.teacherassistant.myExceptions.TeacherNotFoundException;
 import com.example.teacherassistant.services.StudentService;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -14,6 +15,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
 import java.util.Collection;
 import java.util.List;
 
@@ -35,8 +37,8 @@ public class StudentController {
     @GetMapping("/")
     public String healthCheck() throws InvalidStudentDataException {
         {
-            studentService.addStudent(new StudentDTO("Ivanessa", "Markova","89892234543", "us@gm.ru", "nothing" ,11).validateStudentDTO());
-            studentService.addStudent(new StudentDTO("Sergey", "Sergeich","89892234537", "they@gm.ru", "nothing",9).validateStudentDTO());
+            studentService.addStudent(new StudentDTO("Ivanessa", "Markova", "89892234543", "us@gm.ru", "nothing", 11).validateStudentDTO());
+            studentService.addStudent(new StudentDTO("Sergey", "Sergeich", "89892234537", "they@gm.ru", "nothing", 9).validateStudentDTO());
         }
 
         return "Health Check OK";
@@ -74,12 +76,16 @@ public class StudentController {
     }
 
     @RequestMapping(method = RequestMethod.GET, path = "/get-all")
-    public ResponseEntity<?> getAllStudents() {
-        List<Student> allStudents = studentService.getAllStudents();
+    public ResponseEntity<?> getAllStudents(Principal principal) {
+        try {
+            var allStudents = studentService.getAllStudentsByTeacherPhone(principal.getName());
 
-        return allStudents.isEmpty()
-                ? ResponseEntity.noContent().build()
-                : ResponseEntity.ok(allStudents);
+            return allStudents.isEmpty()
+                    ? ResponseEntity.noContent().build()
+                    : ResponseEntity.ok(allStudents);
+        } catch (TeacherNotFoundException e) {
+            return new ResponseEntity<>(new ErrorHandler(HttpStatus.NOT_FOUND.value(), "Teacher not found: " + principal.getName()), HttpStatus.NOT_FOUND);
+        }
     }
 
     @RequestMapping(method = RequestMethod.DELETE, path = "/delete/{id}")

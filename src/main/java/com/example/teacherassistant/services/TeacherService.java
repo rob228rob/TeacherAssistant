@@ -34,10 +34,8 @@ public class TeacherService implements UserDetailsService {
         return teacher.orElseThrow(() -> new TeacherNotFoundException("teacher with id: " + id + " not found."));
     }
 
-    public Teacher findTeacherByPhone(String phone) throws TeacherNotFoundException {
-        Optional<Teacher> teacher = teacherRepository.findByPhoneNumber(phone);
-
-        return teacher.orElseThrow(() -> new TeacherNotFoundException("teacher with phone: " + phone + " not found."));
+    public Optional<Teacher> findTeacherByPhone(String phone) {
+        return teacherRepository.findByPhoneNumber(phone);
     }
 
     public Collection<Student> findStudentsByTeacherId(Long id) throws TeacherNotFoundException {
@@ -89,15 +87,14 @@ public class TeacherService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String phoneNumber) throws UsernameNotFoundException {
-        try {
-            Teacher teacher = findTeacherByPhone(phoneNumber);
-
-            return User.builder()
-                    .username(teacher.getPhoneNumber())
-                    .password(teacher.getPassword())
-                    .build();
-        } catch (TeacherNotFoundException e) {
-            throw new UsernameNotFoundException(e.getMessage());
+        Optional<Teacher> teacher = findTeacherByPhone(phoneNumber);
+        if (teacher.isEmpty()) {
+            throw new UsernameNotFoundException("teacher with phone: " + phoneNumber + " not found.");
         }
+
+        return User.builder()
+                .username(teacher.get().getUsername())
+                .password(teacher.get().getPassword())
+                .build();
     }
 }

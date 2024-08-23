@@ -2,14 +2,21 @@ package com.example.teacherassistant.services;
 
 import com.example.teacherassistant.dtos.StudentDTO;
 import com.example.teacherassistant.entities.Student;
+import com.example.teacherassistant.entities.Teacher;
 import com.example.teacherassistant.myExceptions.StudentNotFoundException;
+import com.example.teacherassistant.myExceptions.TeacherNotFoundException;
 import com.example.teacherassistant.repositories.StudentRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class StudentService {
@@ -61,5 +68,18 @@ public class StudentService {
         boolean existByNameAndSurname = studentRepository.existsByNameAndSurname(studentDTO.getName(), studentDTO.getSurname());
 
         return existByEmail || existByNameAndSurname;
+    }
+
+    public List<StudentDTO> getAllStudentsByTeacherPhone(String phone) throws TeacherNotFoundException {
+        Optional<Teacher> teacher = teacherService.findTeacherByPhone(phone);
+        if (teacher.isEmpty()) {
+            throw new TeacherNotFoundException("teacher with phone: " + phone + " does not exist");
+        }
+
+        Collection<Student> studentsByTeacher = studentRepository.findAllByTeacherId(teacher.get().getId());
+
+        return studentsByTeacher.stream()
+                .map(obj -> modelMapper.map(obj, StudentDTO.class))
+                .toList();
     }
 }
