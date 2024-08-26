@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Details</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            background: #f4f7fc;
+            color: #333;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        header {
+            background-color: #2d3e50;
+            padding: 1rem;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        nav ul {
+            list-style-type: none;
+            display: flex;
+            justify-content: flex-end;
+            padding: 0;
+        }
+
+        nav ul li {
+            margin: 0 1rem;
+        }
+
+        nav ul li a {
+            color: #fff;
+            text-decoration: none;
+            font-weight: bold;
+            transition: color 0.3s ease;
+        }
+
+        nav ul li a:hover {
+            color: #ffdd59;
+        }
+
+        main {
+            flex-grow: 1;
+            padding: 2rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+        }
+
+        .student-details-section {
+            max-width: 800px;
+            width: 100%;
+        }
+
+        .student-details-card {
+            background: #fff;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            padding: 2rem;
+            margin-top: 1rem;
+            text-align: left;
+            border: 1px solid #e0e0e0;
+        }
+
+        .back-button {
+            display: inline-block;
+            background: #2d3e50;
+            color: #fff;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            text-decoration: none;
+            font-size: 1rem;
+            font-weight: bold;
+            margin-bottom: 1.5rem;
+            transition: background 0.3s ease, color 0.3s ease;
+        }
+
+        .back-button:hover {
+            background: #1a2a3a;
+            color: #ffdd59;
+        }
+
+        .back-button:before {
+            content: '\2190'; /* Стрелка влево */
+            display: inline-block;
+            margin-right: 0.5rem;
+            font-size: 1.2rem;
+        }
+
+        .student-details-card h2 {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+            color: #2d3e50;
+        }
+
+        .student-details-card p {
+            font-size: 1rem;
+            margin-bottom: 1rem;
+            color: #666;
+        }
+
+        .student-details-card p strong {
+            color: #2d3e50;
+            display: block;
+            font-weight: 600;
+            margin-bottom: 0.5rem; /* Добавляем отступ снизу для улучшения визуального разделения */
+        }
+
+        .student-details-card p span {
+            color: #333;
+            font-weight: normal;
+        }
+
+
+        footer {
+            background-color: #2d3e50;
+            color: #fff;
+            text-align: center;
+            padding: 1rem;
+            margin-top: auto;
+            box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+        }
+    </style>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            function getParameterByName(name, url = window.location.href) {
+                name = name.replace(/[\[\]]/g, '\\$&');
+                const regex = new RegExp(`[?&]${name}(=([^&#]*)|&|#|$)`),
+                    results = regex.exec(url);
+                if (!results) return null;
+                if (!results[2]) return '';
+                return decodeURIComponent(results[2].replace(/\+/g, ' '));
+            }
+
+            const phoneNumber = getParameterByName('phone');
+            if (phoneNumber) {
+                const apiUrl = `/api/v1/t.assist/students/get/${phoneNumber}`;
+
+                async function fetchStudentDetails() {
+                    try {
+                        const response = await fetch(apiUrl, {
+                            method: 'GET',
+                            headers: {
+                                'Content-Type': 'application/json',
+                            },
+                        });
+
+                        if (response.ok) {
+                            const student = await response.json();
+                            renderStudentDetails(student);
+                        } else {
+                            console.error('Error fetching student details:', response.statusText);
+                            document.querySelector('.student-details-card').innerHTML = `<p>Error fetching data with status: ${response.status}.</p>`;
+                        }
+                    } catch (error) {
+                        console.error('Fetch error:', error);
+                        document.querySelector('.student-details-card').innerHTML = '<p>Error fetching data</p>';
+                    }
+                }
+
+                function renderStudentDetails(student) {
+                    document.querySelector('.student-details-card').innerHTML = `
+                        <h2>${student.name} ${student.surname}</h2>
+                        <p><strong>Phone:</strong> ${student.phone}</p>
+                        <p><strong>Email:</strong> ${student.email}</p>
+                        <p><strong>Grade:</strong> ${student.grade}</p>
+                        <p><strong>Description:</strong> ${student.purposeDescription}</p>
+                    `;
+                }
+
+                fetchStudentDetails();
+            } else {
+                document.querySelector('.student-details-card').innerHTML = '<p>No phone number provided in URL.</p>';
+            }
+        });
+    </script>
+</head>
+<body>
+<header>
+    <nav>
+        <ul>
+            <li><a href="/home">Home</a></li>
+            <li><a href="/profile">Profile</a></li>
+            <li><a href="/settings">Settings</a></li>
+            <li><a href="/logout">Logout</a></li>
+        </ul>
+    </nav>
+</header>
+<main>
+    <section class="student-details-section">
+        <a href="/profile" class="back-button">Back</a>
+        <h1>Student Details</h1>
+        <div class="student-details-card">
+            <!-- Информация о студенте будет загружена и отображена здесь -->
+        </div>
+        <!-- Скрытый input для хранения phoneNumber -->
+        <input type="hidden" id="phoneNumber" value="{{phoneNumber}}">
+    </section>
+</main>
+<footer>
+    <p>&copy; 2024 Teacher Assistant. All rights reserved.</p>
+</footer>
+</body>
+</html>

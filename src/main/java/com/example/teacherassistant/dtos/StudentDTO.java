@@ -28,7 +28,8 @@ public class StudentDTO {
         this
                 .validateNameAndSurname()
                 .validateEmail()
-                .validatePhone();
+                .validatePhone()
+                .validateGrade();
 
         return this;
     }

@@ -33,7 +33,6 @@ public class StudentService {
         if (teacherByPhone.isEmpty()) {
             return false;
         }
-
         Student student = modelMapper.map(studentDTO, Student.class);
         student.setTeacher(teacherByPhone.get());
         studentRepository.save(student);
@@ -94,5 +93,9 @@ public class StudentService {
     @Transactional
     public void deleteStudentByPhone(String phoneNumber) {
         studentRepository.deleteByPhone(phoneNumber);
+    }
+
+    public Optional<Student> findStudentByPhoneNumber(String phoneNumber) {
+        return studentRepository.findByPhone(phoneNumber);
     }
 }

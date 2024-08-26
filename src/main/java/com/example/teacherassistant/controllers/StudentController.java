@@ -63,17 +63,16 @@ public class StudentController {
                 : new ResponseEntity<>(new ErrorHandler(400, "Adding was interrupted"), HttpStatus.NOT_FOUND);
     }
 
-    @RequestMapping(method = RequestMethod.GET, path = "/get/{id}")
-    public ResponseEntity<?> getStudentById(@PathVariable long id) {
-        try {
-            Student studentById = studentService.getStudentById(id);
-
-            return ResponseEntity.ok(studentById);
-        } catch (StudentNotFoundException e) {
-            log.error(e.getMessage());
-
+    @RequestMapping(method = RequestMethod.GET, path = "/get/{phone_number}")
+    public ResponseEntity<?> getStudentByPhoneNumber(@PathVariable String phone_number) {
+        var studentById = studentService.findStudentByPhoneNumber(phone_number);
+        if (studentById.isEmpty()) {
             return ResponseEntity.notFound().build();
         }
+
+        StudentDTO studentDTO = modelMapper.map(studentById.get(), StudentDTO.class);
+
+        return ResponseEntity.ok(studentDTO);
     }
 
     @RequestMapping(method = RequestMethod.GET, path = "/get-all")

@@ -5,6 +5,7 @@ import com.example.teacherassistant.entities.Student;
 import com.example.teacherassistant.entities.Teacher;
 import com.example.teacherassistant.myExceptions.TeacherNotFoundException;
 import com.example.teacherassistant.repositories.TeacherRepository;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.security.core.userdetails.User;
@@ -96,5 +97,10 @@ public class TeacherService implements UserDetailsService {
                 .username(teacher.get().getUsername())
                 .password(teacher.get().getPassword())
                 .build();
+    }
+
+    @Transactional
+    public void deleteTeacherByPhone(String phoneNumber) {
+        teacherRepository.deleteByPhoneNumber(phoneNumber);
     }
 }

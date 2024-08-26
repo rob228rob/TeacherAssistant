@@ -3,7 +3,9 @@ package com.example.teacherassistant.controllers;
 import com.example.teacherassistant.dtos.RegisterTeacherDTO;
 import com.example.teacherassistant.entities.Teacher;
 import com.example.teacherassistant.services.TeacherService;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -14,6 +16,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/v1/t.assist/teachers")
 @RequiredArgsConstructor
+@Slf4j
 public class TeacherController {
 
     private final TeacherService teacherService;
@@ -44,12 +47,10 @@ public class TeacherController {
                 : ResponseEntity.notFound().build();
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<?> deleteTeacher(@PathVariable long id) {
-        if (teacherService.deleteTeacherById(id)) {
-            return ResponseEntity.ok().build();
-        } else {
-            return ResponseEntity.notFound().build();
-        }
+    @DeleteMapping("/delete")
+    public ResponseEntity<?> deleteTeacherByPhoneNumber(@RequestParam String phoneNumber) {
+        teacherService.deleteTeacherByPhone(phoneNumber);
+        log.warn("teacher with phone number {} had been deleted", phoneNumber);
+        return ResponseEntity.noContent().build();
     }
 }

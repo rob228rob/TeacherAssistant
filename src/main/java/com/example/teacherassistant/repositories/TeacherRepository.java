@@ -15,6 +15,9 @@ public interface TeacherRepository extends JpaRepository<Teacher, Long> {
 
     boolean existsByPhoneNumber(String phone);
 
-    //Long findByPhoneNumber(String phone);
+    /*
+    TODO: deleteing by Phone Number NoT Work CORRECTLY!!!!
+     */
+    void deleteByPhoneNumber(String phoneNumber);
 }
 

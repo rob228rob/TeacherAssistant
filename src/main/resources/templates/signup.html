@@ -74,10 +74,10 @@
         })
             .then(response => {
                 if (response.ok) {
-                    window.location.href = '/home'; // Перенаправление при успешной регистрации
+                    window.location.href = '/home';
                 } else {
                     return response.json().then(data => {
-                        // Обработка ошибки
+
                         document.getElementById('error-message').style.display = 'block';
                         document.getElementById('error-text').textContent = data.error || 'An error occurred';
                     });

@@ -2,20 +2,19 @@ package com.example.teacherassistant.controllers;
 
 import com.example.teacherassistant.dtos.RegisterTeacherDTO;
 import com.example.teacherassistant.services.TeacherService;
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 
 @Slf4j
 @Controller
 @RequiredArgsConstructor
-public class RegistrationControllerMVC {
+public class ControllerMVC {
 
     private final TeacherService teacherService;
 
@@ -38,6 +37,16 @@ public class RegistrationControllerMVC {
     @GetMapping("/settings")
     public String settings(Model model) {
         return "settings";
+    }
+
+    @GetMapping("/profile/info")
+    public String profileInfo(Model model) {
+        return "profile-info";
+    }
+
+    @GetMapping("/error")
+    public String error() {
+        return "error-page";
     }
 
     @PostMapping("/register")

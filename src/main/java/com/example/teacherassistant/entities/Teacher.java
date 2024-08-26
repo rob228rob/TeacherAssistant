@@ -3,6 +3,7 @@ package com.example.teacherassistant.entities;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.Cascade;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -35,6 +36,7 @@ public class Teacher implements UserDetails {
     private String primarySubject;
     
     @OneToMany(mappedBy = "teacher")
+    @Cascade(org.hibernate.annotations.CascadeType.ALL)
     private Collection<Student> students;
 
     @Override
