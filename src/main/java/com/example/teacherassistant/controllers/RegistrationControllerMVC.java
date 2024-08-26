@@ -35,6 +35,11 @@ public class RegistrationControllerMVC {
         return "home";
     }
 
+    @GetMapping("/settings")
+    public String settings(Model model) {
+        return "settings";
+    }
+
     @PostMapping("/register")
     public String registerTeacher(@RequestBody RegisterTeacherDTO registerTeacherDTO) {
         if (teacherService.existsByPhoneNumber(registerTeacherDTO.getPhoneNumber())) {

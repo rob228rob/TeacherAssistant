@@ -7,10 +7,12 @@ import com.example.teacherassistant.myExceptions.InvalidStudentDataException;
 import com.example.teacherassistant.myExceptions.StudentNotFoundException;
 import com.example.teacherassistant.myExceptions.TeacherNotFoundException;
 import com.example.teacherassistant.services.StudentService;
+import jakarta.websocket.server.PathParam;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
+import org.springframework.data.repository.query.Param;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -36,16 +38,12 @@ public class StudentController {
 
     @GetMapping("/")
     public String healthCheck() throws InvalidStudentDataException {
-        {
-            studentService.addStudent(new StudentDTO("Ivanessa", "Markova", "89892234543", "us@gm.ru", "nothing", 11).validateStudentDTO());
-            studentService.addStudent(new StudentDTO("Sergey", "Sergeich", "89892234537", "they@gm.ru", "nothing", 9).validateStudentDTO());
-        }
 
         return "Health Check OK";
     }
 
     @RequestMapping(method = RequestMethod.POST, path = "/add-new")
-    public ResponseEntity<?> addStudent(@RequestBody StudentDTO studentDTO) {
+    public ResponseEntity<?> addStudent(@RequestBody StudentDTO studentDTO, Principal principal) {
         try {
             studentDTO.validateStudentDTO();
             boolean isExist = studentService.checkIfStudentExist(studentDTO);
@@ -57,9 +55,12 @@ public class StudentController {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
 
-        Student newStudent = studentService.addStudent(studentDTO);
+        boolean addedSuccessfully = studentService.addStudent(studentDTO, principal.getName());
 
-        return ResponseEntity.ok(newStudent);
+        //TODO: !!! Rewrite with informative error message
+        return addedSuccessfully
+                ? ResponseEntity.ok().build()
+                : new ResponseEntity<>(new ErrorHandler(400, "Adding was interrupted"), HttpStatus.NOT_FOUND);
     }
 
     @RequestMapping(method = RequestMethod.GET, path = "/get/{id}")
@@ -88,11 +89,23 @@ public class StudentController {
         }
     }
 
-    @RequestMapping(method = RequestMethod.DELETE, path = "/delete/{id}")
-    public ResponseEntity<?> deleteStudentById(@PathVariable long id) {
-        studentService.deleteStudentById(id);
+    @RequestMapping(method = RequestMethod.DELETE, path = "/delete")
+    public ResponseEntity<?> deleteStudentById(@RequestParam String phoneNumber) {
+        if (!validatePhoneNumber(phoneNumber)) {
+            return ResponseEntity.badRequest().body("Invalid phone number: " + phoneNumber);
+        }
 
-        return ResponseEntity.ok().build();
+        studentService.deleteStudentByPhone(phoneNumber);
+
+        return ResponseEntity.noContent().build();
+    }
+
+    private boolean validatePhoneNumber(String phoneNumber) {
+        if (phoneNumber == null || phoneNumber.length() != 11) {
+            return false;
+        }
+
+        return true;
     }
 
     @RequestMapping(method = RequestMethod.DELETE, path = "/delete-all")

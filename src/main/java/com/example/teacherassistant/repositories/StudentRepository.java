@@ -25,4 +25,6 @@ public interface StudentRepository extends JpaRepository<Student, Long> {
     Collection<Student> findAllByTeacherId(Long teacherId);
 
     Collection<Student> findAllByTeacherPhoneNumber(String phoneNumber);
+
+    void deleteByPhone(String phoneNumber);
 }

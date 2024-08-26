@@ -6,6 +6,7 @@ import com.example.teacherassistant.entities.Teacher;
 import com.example.teacherassistant.myExceptions.StudentNotFoundException;
 import com.example.teacherassistant.myExceptions.TeacherNotFoundException;
 import com.example.teacherassistant.repositories.StudentRepository;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
@@ -27,10 +28,17 @@ public class StudentService {
 
     private final StudentRepository studentRepository;
 
-    public Student addStudent(StudentDTO studentDTO) {
-        Student student = modelMapper.map(studentDTO, Student.class);
+    public boolean addStudent(StudentDTO studentDTO, String teacherPhone) {
+        Optional<Teacher> teacherByPhone = teacherService.findTeacherByPhone(teacherPhone);
+        if (teacherByPhone.isEmpty()) {
+            return false;
+        }
 
-        return studentRepository.save(student);
+        Student student = modelMapper.map(studentDTO, Student.class);
+        student.setTeacher(teacherByPhone.get());
+        studentRepository.save(student);
+
+        return true;
     }
 
     public List<Student> getAllStudents() {
@@ -81,5 +89,10 @@ public class StudentService {
         return studentsByTeacher.stream()
                 .map(obj -> modelMapper.map(obj, StudentDTO.class))
                 .toList();
+    }
+
+    @Transactional
+    public void deleteStudentByPhone(String phoneNumber) {
+        studentRepository.deleteByPhone(phoneNumber);
     }
 }

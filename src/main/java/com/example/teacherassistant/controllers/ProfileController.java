@@ -11,4 +11,9 @@ public class ProfileController {
     public String profile(Model model) {
         return "profile";
     }
+
+    @GetMapping("/add-new-student")
+    public String addNew(Model model) {
+        return "add-new-student";
+    }
 }
