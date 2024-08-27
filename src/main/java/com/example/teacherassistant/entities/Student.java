@@ -33,4 +33,8 @@ public class Student {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "teacher_id")
     private Teacher teacher;
+
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "payment_info_id", referencedColumnName = "id")
+    private PaymentInfo paymentInfo;
 }

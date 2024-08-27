@@ -2,6 +2,7 @@ package com.example.teacherassistant.controllers;
 
 import com.example.teacherassistant.dtos.LoginRequestDTO;
 import com.example.teacherassistant.dtos.RegisterTeacherDTO;
+import com.example.teacherassistant.entities.Student;
 import com.example.teacherassistant.entities.Teacher;
 import com.example.teacherassistant.myExceptions.TeacherNotFoundException;
 import com.example.teacherassistant.services.TeacherService;
@@ -15,6 +16,8 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
+
+import java.security.Principal;
 
 @Slf4j
 @RestController

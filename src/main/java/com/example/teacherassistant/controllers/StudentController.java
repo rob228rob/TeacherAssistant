@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.*;
 import java.security.Principal;
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 
 @Slf4j
 @RestController
@@ -34,12 +35,6 @@ public class StudentController {
     @GetMapping("/count")
     public ResponseEntity<Long> count() {
         return new ResponseEntity<>(studentService.studentsCount(), HttpStatus.OK);
-    }
-
-    @GetMapping("/")
-    public String healthCheck() throws InvalidStudentDataException {
-
-        return "Health Check OK";
     }
 
     @RequestMapping(method = RequestMethod.POST, path = "/add-new")
@@ -133,6 +128,5 @@ public class StudentController {
 
         return ResponseEntity.ok().build();
     }
-
 
 }

@@ -99,7 +99,6 @@ public class TeacherService implements UserDetailsService {
                 .build();
     }
 
-    @Transactional
     public void deleteTeacherByPhone(String phoneNumber) {
         teacherRepository.deleteByPhoneNumber(phoneNumber);
     }

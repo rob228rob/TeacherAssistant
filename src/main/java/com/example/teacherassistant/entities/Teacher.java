@@ -34,9 +34,8 @@ public class Teacher implements UserDetails {
 
     @Column(name = "prim_subject", nullable = false)
     private String primarySubject;
-    
-    @OneToMany(mappedBy = "teacher")
-    @Cascade(org.hibernate.annotations.CascadeType.ALL)
+
+    @OneToMany(mappedBy = "teacher", cascade = CascadeType.ALL, orphanRemoval = true)
     private Collection<Student> students;
 
     @Override

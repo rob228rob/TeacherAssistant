@@ -70,6 +70,7 @@
 
         .form-group {
             margin-bottom: 1.5rem;
+            text-align: left;
         }
 
         .form-group label {
@@ -80,36 +81,70 @@
         }
 
         .form-group input {
-            width: 100%;
+            width: calc(100% - 100px);
             padding: 0.75rem;
             border: 1px solid #ccc;
             border-radius: 4px;
             font-size: 1rem;
+            display: inline-block;
         }
 
-        .btn {
-            background-color: #2d3e50;
-            color: #fff;
-            padding: 0.75rem 1.5rem;
+        .form-group button {
+            width: 80px;
+            padding: 0.75rem;
+            margin-left: 10px;
             border: none;
             border-radius: 4px;
             font-size: 1rem;
             cursor: pointer;
+            background-color: #2d3e50;
+            color: #fff;
             transition: background 0.3s ease;
+            display: inline-block;
+            opacity: 0.5;
+            cursor: not-allowed;
         }
 
-        .btn:hover {
+        .form-group button.enabled {
+            opacity: 1;
+            cursor: pointer;
+        }
+
+        .form-group button:hover {
             background-color: #1a2a3a;
         }
 
         .btn-delete {
             background-color: #d9534f;
+            color: #fff;
             margin-top: 2rem;
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 4px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         }
 
         .btn-delete:hover {
             background-color: #c9302c;
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+            transform: translateY(-2px);
         }
+
+        .btn-delete:active {
+            background-color: #b52b27;
+            transform: translateY(0);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn-delete::before {
+            content: "\2716"; /* Unicode для символа "крестик" */
+            margin-right: 8px;
+            font-weight: bold;
+        }
+
     </style>
 </head>
 <body>
@@ -126,31 +161,38 @@
 <main>
     <section class="settings-section">
         <h1>Account Settings</h1>
-        <form id="accountSettingsForm">
-            <div class="form-group">
-                <label for="name">Name</label>
-                <input type="text" id="name" name="name" required>
-            </div>
-            <div class="form-group">
-                <label for="surname">Surname</label>
-                <input type="text" id="surname" name="surname" required>
-            </div>
-            <div class="form-group">
-                <label for="phoneNumber">Phone Number</label>
-                <input type="text" id="phoneNumber" name="phoneNumber" required>
-            </div>
-            <div class="form-group">
-                <label for="primarySubject">Primary Subject</label>
-                <input type="text" id="primarySubject" name="primarySubject" required>
-            </div>
-            <div class="form-group">
-                <label for="password">Password</label>
-                <input type="password" id="password" name="password" required>
-            </div>
-            <button type="submit" class="btn">Save Changes</button>
-        </form>
 
-        <button id="deleteAccountBtn" class="btn btn-delete">Delete Account</button>
+        <div class="form-group">
+            <label for="name">Name</label>
+            <input type="text" id="name" name="name" disabled>
+            <button id="editNameBtn" disabled>Edit</button>
+        </div>
+
+        <div class="form-group">
+            <label for="surname">Surname</label>
+            <input type="text" id="surname" name="surname" disabled>
+            <button id="editSurnameBtn" disabled>Edit</button>
+        </div>
+
+        <div class="form-group">
+            <label for="phoneNumber">Phone Number</label>
+            <input type="text" id="phoneNumber" name="phoneNumber" disabled>
+            <button id="editPhoneBtn" disabled>Edit</button>
+        </div>
+
+        <div class="form-group">
+            <label for="primarySubject">Primary Subject</label>
+            <input type="text" id="primarySubject" name="primarySubject" disabled>
+            <button id="editSubjectBtn" disabled>Edit</button>
+        </div>
+
+        <div class="form-group">
+            <label for="password">Password</label>
+            <input type="password" id="password" name="password" disabled>
+            <button id="editPasswordBtn" disabled>Edit</button>
+        </div>
+
+        <button id="deleteAccountBtn" class="btn btn-delete" disabled>Delete Account</button>
     </section>
 </main>
 <footer>
@@ -159,51 +201,80 @@
 
 <script>
     document.addEventListener('DOMContentLoaded', function () {
-        // Заполнение полей формы текущими данными пользователя (должно быть реализовано через API)
-        fetch('/api/v1/t.assist/teachers/current')  // Замените на актуальный эндпоинт
+        // Disable all buttons initially
+        const buttons = document.querySelectorAll('button');
+        buttons.forEach(button => {
+            button.disabled = true;
+            button.classList.remove('enabled');
+        });
+
+        // Fetch current account details and populate fields
+        fetch('/api/v1/t.assist/teachers/current')
             .then(response => response.json())
             .then(data => {
+                // Populate fields with the fetched data
                 document.getElementById('name').value = data.name;
                 document.getElementById('surname').value = data.surname;
                 document.getElementById('phoneNumber').value = data.phoneNumber;
                 document.getElementById('primarySubject').value = data.primarySubject;
-                // Пароль не заполняется по безопасности
+
+               //Enable all buttons after data is loaded
+                buttons.forEach(button => {
+                    button.disabled = false;
+                    button.classList.add('enabled');
+                });
             });
 
-        // Обработка формы изменения данных аккаунта
-        document.getElementById('accountSettingsForm').addEventListener('submit', function (event) {
-            event.preventDefault();
-            const formData = new FormData(this);
-            const jsonData = {};
-            formData.forEach((value, key) => { jsonData[key] = value; });
+        // Make fields editable and save changes
+        function makeEditableAndSave(inputId, buttonId, apiField) {
+            const input = document.getElementById(inputId);
+            const button = document.getElementById(buttonId);
 
-            fetch('/api/v1/t.assist/teachers/update', {  // Замените на актуальный эндпоинт
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(jsonData)
-            })
-                .then(response => {
-                    if (response.ok) {
-                        alert('Account settings updated successfully.');
-                    } else {
-                        alert('Failed to update account settings.');
-                    }
-                });
-        });
+            if (input.disabled) {
+                input.disabled = false;
+                button.textContent = 'Save';
+            } else {
+                const updatedValue = input.value;
+                const data = {};
+                data[apiField] = updatedValue;
 
-        // Обработка кнопки удаления аккаунта
+                fetch('/api/v1/t.assist/teachers/update', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(data)
+                })
+                    .then(response => {
+                        if (response.ok) {
+                            alert(`${apiField} updated successfully.`);
+                            input.disabled = true;
+                            button.textContent = 'Edit';
+                        } else {
+                            alert(`Failed to update ${apiField}.`);
+                        }
+                    });
+            }
+        }
+
+        document.getElementById('editNameBtn').addEventListener('click', () => makeEditableAndSave('name', 'editNameBtn', 'name'));
+        document.getElementById('editSurnameBtn').addEventListener('click', () => makeEditableAndSave('surname', 'editSurnameBtn', 'surname'));
+        document.getElementById('editPhoneBtn').addEventListener('click', () => makeEditableAndSave('phoneNumber', 'editPhoneBtn', 'phoneNumber'));
+        document.getElementById('editSubjectBtn').addEventListener('click', () => makeEditableAndSave('primarySubject', 'editSubjectBtn', 'primarySubject'));
+        document.getElementById('editPasswordBtn').addEventListener('click', () => makeEditableAndSave('password', 'editPasswordBtn', 'password'));
+
+        // Handle account deletion
         document.getElementById('deleteAccountBtn').addEventListener('click', function () {
             const phoneNumber = document.getElementById('phoneNumber').value;
+
             if (confirm('Are you sure you want to delete your account? This action cannot be undone.')) {
                 fetch(`/api/v1/t.assist/teachers/delete?phoneNumber=${phoneNumber}`, {
                     method: 'DELETE'
                 })
                     .then(response => {
-                        if (response.status === 200 || response.status === 204) {
+                        if (response.ok || response.status === 204) {
                             alert('Account deleted successfully.');
-                            window.location.href = '/logout';
+                            window.location.href = '/logout';  // Redirect after account deletion
                         } else {
                             alert('Failed to delete account.');
                         }
