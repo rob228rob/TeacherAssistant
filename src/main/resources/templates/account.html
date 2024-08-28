@@ -239,7 +239,7 @@
                 data[apiField] = updatedValue;
 
                 fetch('/api/v1/t.assist/teachers/update', {
-                    method: 'POST',
+                    method: 'PATCH',
                     headers: {
                         'Content-Type': 'application/json'
                     },
@@ -263,7 +263,6 @@
         document.getElementById('editSubjectBtn').addEventListener('click', () => makeEditableAndSave('primarySubject', 'editSubjectBtn', 'primarySubject'));
         document.getElementById('editPasswordBtn').addEventListener('click', () => makeEditableAndSave('password', 'editPasswordBtn', 'password'));
 
-        // Handle account deletion
         document.getElementById('deleteAccountBtn').addEventListener('click', function () {
             const phoneNumber = document.getElementById('phoneNumber').value;
 

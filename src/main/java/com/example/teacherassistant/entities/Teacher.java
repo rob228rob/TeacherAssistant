@@ -38,6 +38,10 @@ public class Teacher implements UserDetails {
     @OneToMany(mappedBy = "teacher", cascade = CascadeType.ALL, orphanRemoval = true)
     private Collection<Student> students;
 
+//    @OneToMany(mappedBy = "student", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+//    @Column(name = "images", nullable = true)
+//    private List<Image> images;
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return List.of();

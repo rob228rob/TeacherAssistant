@@ -1,5 +1,7 @@
 package com.example.teacherassistant.config;
 
+import com.example.teacherassistant.services.FileManager;
+import com.example.teacherassistant.services.FilesystemFileManager;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -18,5 +20,10 @@ public class Config {
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
+    }
+
+    @Bean
+    public FileManager fileManager() {
+        return new FilesystemFileManager();
     }
 }

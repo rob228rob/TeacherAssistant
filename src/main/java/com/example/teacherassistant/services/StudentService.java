@@ -1,6 +1,6 @@
 package com.example.teacherassistant.services;
 
-import com.example.teacherassistant.dtos.StudentDTO;
+import com.example.teacherassistant.dtos.RequestStudentDTO;
 import com.example.teacherassistant.entities.Student;
 import com.example.teacherassistant.entities.Teacher;
 import com.example.teacherassistant.myExceptions.StudentNotFoundException;
@@ -12,7 +12,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
@@ -28,12 +27,12 @@ public class StudentService {
 
     private final StudentRepository studentRepository;
 
-    public boolean addStudent(StudentDTO studentDTO, String teacherPhone) {
+    public boolean addStudent(RequestStudentDTO requestStudentDTO, String teacherPhone) {
         Optional<Teacher> teacherByPhone = teacherService.findTeacherByPhone(teacherPhone);
         if (teacherByPhone.isEmpty()) {
             return false;
         }
-        Student student = modelMapper.map(studentDTO, Student.class);
+        Student student = modelMapper.map(requestStudentDTO, Student.class);
         student.setTeacher(teacherByPhone.get());
         studentRepository.save(student);
 
@@ -56,8 +55,8 @@ public class StudentService {
         studentRepository.deleteAll();
     }
 
-    public void updateStudentById(StudentDTO studentDTO) {
-        Student student = modelMapper.map(studentDTO, Student.class);
+    public void updateStudentById(RequestStudentDTO requestStudentDTO) {
+        Student student = modelMapper.map(requestStudentDTO, Student.class);
 
         studentRepository.save(student);
     }
@@ -70,14 +69,14 @@ public class StudentService {
         return studentRepository.findByEmail(email).orElseThrow(() -> new StudentNotFoundException("There's no student with email: " + email));
     }
 
-    public boolean checkIfStudentExist(StudentDTO studentDTO) {
-        boolean existByEmail = studentRepository.existsByEmail(studentDTO.getEmail());
-        boolean existByNameAndSurname = studentRepository.existsByNameAndSurname(studentDTO.getName(), studentDTO.getSurname());
+    public boolean checkIfStudentExist(RequestStudentDTO requestStudentDTO) {
+        boolean existByEmail = studentRepository.existsByEmail(requestStudentDTO.getEmail());
+        boolean existByNameAndSurname = studentRepository.existsByNameAndSurname(requestStudentDTO.getName(), requestStudentDTO.getSurname());
 
         return existByEmail || existByNameAndSurname;
     }
 
-    public List<StudentDTO> getAllStudentsByTeacherPhone(String phone) throws TeacherNotFoundException {
+    public List<RequestStudentDTO> getAllStudentsByTeacherPhone(String phone) throws TeacherNotFoundException {
         Optional<Teacher> teacher = teacherService.findTeacherByPhone(phone);
         if (teacher.isEmpty()) {
             throw new TeacherNotFoundException("teacher with phone: " + phone + " does not exist");
@@ -86,7 +85,7 @@ public class StudentService {
         Collection<Student> studentsByTeacher = studentRepository.findAllByTeacherId(teacher.get().getId());
 
         return studentsByTeacher.stream()
-                .map(obj -> modelMapper.map(obj, StudentDTO.class))
+                .map(obj -> modelMapper.map(obj, RequestStudentDTO.class))
                 .toList();
     }
 

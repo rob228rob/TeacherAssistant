@@ -10,7 +10,7 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class StudentDTO {
+public class RequestStudentDTO {
 
     private String name;
 
@@ -24,7 +24,7 @@ public class StudentDTO {
 
     private int grade;
 
-    public StudentDTO validateStudentDTO() throws InvalidStudentDataException {
+    public RequestStudentDTO validateStudentDTO() throws InvalidStudentDataException {
         this
                 .validateNameAndSurname()
                 .validateEmail()
@@ -34,7 +34,7 @@ public class StudentDTO {
         return this;
     }
 
-    private StudentDTO validatePhone() throws InvalidStudentDataException {
+    private RequestStudentDTO validatePhone() throws InvalidStudentDataException {
         if (phone.length() != 11 && phone.charAt(0) != '+') {
             throw new InvalidStudentDataException("phone number is incorrect");
         }
@@ -42,7 +42,7 @@ public class StudentDTO {
         return this;
     }
 
-    private StudentDTO validateEmail() throws InvalidStudentDataException {
+    private RequestStudentDTO validateEmail() throws InvalidStudentDataException {
         if (email == null || email.isEmpty()) {
             throw new InvalidStudentDataException("Email is required");
         }
@@ -61,7 +61,7 @@ public class StudentDTO {
         return this;
     }
 
-    private StudentDTO validateGrade() throws InvalidStudentDataException {
+    private RequestStudentDTO validateGrade() throws InvalidStudentDataException {
         if (grade < 1 || grade > 11) {
             throw new InvalidStudentDataException("Age must be between 0 and 100");
         }
@@ -69,7 +69,7 @@ public class StudentDTO {
         return this;
     }
 
-    private StudentDTO validateNameAndSurname() throws InvalidStudentDataException {
+    private RequestStudentDTO validateNameAndSurname() throws InvalidStudentDataException {
         if (name == null || name.isEmpty()) {
             throw new InvalidStudentDataException("First name cannot be empty");
         }

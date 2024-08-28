@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Data
 @NoArgsConstructor
 @Entity(name = "students")
@@ -37,4 +39,8 @@ public class Student {
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "payment_info_id", referencedColumnName = "id")
     private PaymentInfo paymentInfo;
+
+    @OneToMany(mappedBy = "student", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @Column(name = "images", nullable = true)
+    private List<StudentImage> studentImages;
 }

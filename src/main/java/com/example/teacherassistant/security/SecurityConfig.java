@@ -44,7 +44,7 @@ public class SecurityConfig {
                 .logout(LogoutConfigurer::permitAll)
                 .sessionManagement(sessionManagement ->
                         sessionManagement.sessionCreationPolicy(SessionCreationPolicy.ALWAYS));
-                //.addFilterBefore(customFilter, UsernamePasswordAuthenticationFilter.class); ;
+                //.addFilterBefore(customFilter, UsernamePasswordAuцthenticationFilter.class); ;
 
         return http.build();
     }

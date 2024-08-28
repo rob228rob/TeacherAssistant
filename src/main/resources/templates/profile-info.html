@@ -60,6 +60,9 @@
         .student-details-section {
             max-width: 800px;
             width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
         }
 
         .student-details-card {
@@ -70,6 +73,25 @@
             margin-top: 1rem;
             text-align: left;
             border: 1px solid #e0e0e0;
+            display: flex;
+            align-items: flex-start;
+        }
+
+        .student-details-text {
+            flex: 1;
+        }
+
+        .student-profile-picture {
+            margin-left: 20px;
+        }
+
+        .student-profile-picture img {
+            border-radius: 50%;
+            width: 150px;
+            height: 150px;
+            object-fit: cover;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            border: 3px solid #2d3e50;
         }
 
         .back-button {
@@ -115,12 +137,6 @@
             font-weight: 600;
             margin-bottom: 0.5rem; /* Добавляем отступ снизу для улучшения визуального разделения */
         }
-
-        .student-details-card p span {
-            color: #333;
-            font-weight: normal;
-        }
-
 
         footer {
             background-color: #2d3e50;
@@ -168,14 +184,50 @@
                     }
                 }
 
+                async function fetchAndRenderImages(imageIds) {
+                    const imagesContainer = document.querySelector('.student-profile-picture');
+                    imagesContainer.innerHTML = ''; // Очищаем контейнер
+
+                    for (let imageId of imageIds) {
+                        try {
+                            const imageResponse = await fetch(`/download/${imageId}`);
+                            if (imageResponse.ok) {
+                                const imageBlob = await imageResponse.blob();
+                                const imageUrl = URL.createObjectURL(imageBlob);
+
+                                const imgElement = document.createElement('img');
+                                imgElement.src = imageUrl;
+                                imgElement.alt = `Image ${imageId}`;
+
+                                imagesContainer.appendChild(imgElement);
+                            } else {
+                                console.error(`Failed to load image with ID: ${imageId}`);
+                            }
+                        } catch (error) {
+                            console.error('Error fetching image:', error);
+                        }
+                    }
+                }
+
                 function renderStudentDetails(student) {
                     document.querySelector('.student-details-card').innerHTML = `
+                    <div class="student-details-text">
                         <h2>${student.name} ${student.surname}</h2>
                         <p><strong>Phone:</strong> ${student.phone}</p>
                         <p><strong>Email:</strong> ${student.email}</p>
                         <p><strong>Grade:</strong> ${student.grade}</p>
                         <p><strong>Description:</strong> ${student.purposeDescription}</p>
-                    `;
+                    </div>
+                    <div class="student-profile-picture">
+                        <!-- Здесь будет отображено изображение профиля -->
+                    </div>
+                `;
+
+                    if (student.imageIds && student.imageIds.length > 0) {
+                        fetchAndRenderImages(student.imageIds);
+                    } else {
+                        document.querySelector('.student-profile-picture').innerHTML = '<p>No profile image available</p>';
+                    }
                 }
 
                 fetchStudentDetails();

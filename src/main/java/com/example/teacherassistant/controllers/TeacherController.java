@@ -2,11 +2,8 @@ package com.example.teacherassistant.controllers;
 
 import com.example.teacherassistant.dtos.RegisterTeacherDTO;
 import com.example.teacherassistant.dtos.ResponseTeacherDTO;
-import com.example.teacherassistant.dtos.StudentDTO;
-import com.example.teacherassistant.entities.Student;
 import com.example.teacherassistant.entities.Teacher;
 import com.example.teacherassistant.services.TeacherService;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;

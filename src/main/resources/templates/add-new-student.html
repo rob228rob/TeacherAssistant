@@ -152,7 +152,9 @@
 <main>
     <div class="form-container">
         <h1>Add New Student</h1>
-        <form id="studentForm">
+
+        <!-- Форма для отправки данных студента и файла -->
+        <form id="studentForm" enctype="multipart/form-data">
             <label for="name">Name</label>
             <input type="text" id="name" name="name" required>
 
@@ -171,6 +173,10 @@
             <label for="description">Description</label>
             <textarea id="description" name="purposeDescription" rows="4"></textarea>
 
+            <!-- Поле для загрузки аватара -->
+            <label for="avatar">Upload Avatar</label>
+            <input type="file" id="avatar" name="file1" accept="image/*">
+
             <button type="submit">Add Student</button>
             <a href="/profile" class="cancel-button">Cancel</a>
         </form>
@@ -179,29 +185,61 @@
 <footer>
     <p>&copy; 2024 Teacher Assistant. All rights reserved.</p>
 </footer>
+
 <script>
     document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('studentForm').addEventListener('submit', async (event) => {
-            event.preventDefault(); // Prevent default form submission
+            event.preventDefault(); // Останавливаем стандартное поведение формы
 
+            // Создаем FormData для отправки данных студента
             const formData = new FormData(event.target);
-            const studentData = {};
-            formData.forEach((value, key) => {
-                studentData[key] = value;
-            });
+
+            // Удаляем файл перед отправкой данных студента
+            formData.delete('avatar');
 
             try {
+                // Отправляем данные студента
+                const studentData = {
+                    name: formData.get('name'),
+                    surname: formData.get('surname'),
+                    phone: formData.get('phone'),
+                    email: formData.get('email'),
+                    grade: formData.get('grade'),
+                    purposeDescription: formData.get('purposeDescription')
+                };
+
                 const response = await fetch('/api/v1/t.assist/students/add-new', {
                     method: 'POST',
                     headers: {
-                        'Content-Type': 'application/json',
+                        'Content-Type': 'application/json', // Отправляем JSON
+                        'Accept': 'application/json'
                     },
-                    body: JSON.stringify(studentData),
+                    body: JSON.stringify(studentData)
                 });
 
                 if (response.ok) {
                     alert('Student added successfully.');
-                    window.location.href = '/profile'; // Redirect to profile page
+
+                    const phone = formData.get('phone');
+                    const file = document.getElementById('avatar').files[0];
+
+                    if (file && phone) {
+                        const uploadFormData = new FormData();
+                        uploadFormData.append('file1', file);
+
+                        const fileUploadResponse = await fetch(`/upload?phone=${phone}`, {
+                            method: 'POST',
+                            body: uploadFormData
+                        });
+
+                        if (fileUploadResponse.ok) {
+                            alert('Avatar uploaded successfully.');
+                        } else {
+                            alert('Failed to upload avatar.');
+                        }
+                    }
+
+                    window.location.href = '/profile'; // Перенаправляем на страницу профиля
                 } else {
                     alert('Failed to add student.');
                 }
@@ -211,6 +249,7 @@
             }
         });
     });
+
 </script>
 </body>
 </html>

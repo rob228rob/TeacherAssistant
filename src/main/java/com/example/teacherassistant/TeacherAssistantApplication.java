@@ -9,9 +9,6 @@ import java.io.File;
 public class TeacherAssistantApplication {
 
     public static void main(String[] args) {
-
-        //File file = new File("newone.txt");
-
         SpringApplication.run(TeacherAssistantApplication.class, args);
     }
 
