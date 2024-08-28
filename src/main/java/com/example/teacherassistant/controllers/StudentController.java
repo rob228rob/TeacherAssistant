@@ -6,6 +6,7 @@ import com.example.teacherassistant.dtos.ResponseStudentDTO;
 import com.example.teacherassistant.entities.Student;
 import com.example.teacherassistant.entities.StudentImage;
 import com.example.teacherassistant.myExceptions.InvalidStudentDataException;
+import com.example.teacherassistant.myExceptions.StudentNotFoundException;
 import com.example.teacherassistant.myExceptions.TeacherNotFoundException;
 import com.example.teacherassistant.services.StudentService;
 import lombok.RequiredArgsConstructor;
@@ -87,21 +88,13 @@ public class StudentController {
 
     @RequestMapping(method = RequestMethod.DELETE, path = "/delete")
     public ResponseEntity<?> deleteStudentById(@RequestParam String phoneNumber) {
-        if (!validatePhoneNumber(phoneNumber)) {
+        if (!studentService.validatePhoneNumber(phoneNumber)) {
             return ResponseEntity.badRequest().body("Invalid phone number: " + phoneNumber);
         }
 
         studentService.deleteStudentByPhone(phoneNumber);
 
         return ResponseEntity.noContent().build();
-    }
-
-    private boolean validatePhoneNumber(String phoneNumber) {
-        if (phoneNumber == null || phoneNumber.length() != 11) {
-            return false;
-        }
-
-        return true;
     }
 
     @RequestMapping(method = RequestMethod.DELETE, path = "/delete-all")
@@ -124,11 +117,15 @@ public class StudentController {
         return ResponseEntity.ok().build();
     }
 
-    @RequestMapping(method = RequestMethod.PUT, path = "/update")
-    public ResponseEntity<?> updateStudent(@RequestBody RequestStudentDTO requestStudentDTO) {
-        studentService.updateStudentById(requestStudentDTO);
-
-        return ResponseEntity.ok().build();
+    @PatchMapping(path = "/update")
+    public ResponseEntity<?> updateStudent(@RequestBody RequestStudentDTO requestStudentDTO, Principal principal) {
+        String phoneNumber = principal.getName();
+        try {
+            studentService.updateStudentPartly(requestStudentDTO, phoneNumber);
+            return ResponseEntity.ok().build();
+        } catch (StudentNotFoundException e) {
+            return ResponseEntity.notFound().build();
+        }
     }
 
 }

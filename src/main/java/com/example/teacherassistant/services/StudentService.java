@@ -1,7 +1,9 @@
 package com.example.teacherassistant.services;
 
 import com.example.teacherassistant.dtos.RequestStudentDTO;
+import com.example.teacherassistant.dtos.ResponseStudentDTO;
 import com.example.teacherassistant.entities.Student;
+import com.example.teacherassistant.entities.StudentImage;
 import com.example.teacherassistant.entities.Teacher;
 import com.example.teacherassistant.myExceptions.StudentNotFoundException;
 import com.example.teacherassistant.myExceptions.TeacherNotFoundException;
@@ -15,6 +17,9 @@ import org.springframework.stereotype.Service;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Consumer;
+import java.util.function.IntConsumer;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -76,7 +81,7 @@ public class StudentService {
         return existByEmail || existByNameAndSurname;
     }
 
-    public List<RequestStudentDTO> getAllStudentsByTeacherPhone(String phone) throws TeacherNotFoundException {
+    public List<ResponseStudentDTO> getAllStudentsByTeacherPhone(String phone) throws TeacherNotFoundException {
         Optional<Teacher> teacher = teacherService.findTeacherByPhone(phone);
         if (teacher.isEmpty()) {
             throw new TeacherNotFoundException("teacher with phone: " + phone + " does not exist");
@@ -85,7 +90,13 @@ public class StudentService {
         Collection<Student> studentsByTeacher = studentRepository.findAllByTeacherId(teacher.get().getId());
 
         return studentsByTeacher.stream()
-                .map(obj -> modelMapper.map(obj, RequestStudentDTO.class))
+                .map(student -> {
+                    var reqStudentDTO = modelMapper.map(student, ResponseStudentDTO.class);
+                    List<Long> imageIds = student.getStudentImages().stream().map(StudentImage::getId).toList();
+                    reqStudentDTO.setImageIds(imageIds);
+
+                    return reqStudentDTO;
+                })
                 .toList();
     }
 
@@ -96,5 +107,41 @@ public class StudentService {
 
     public Optional<Student> findStudentByPhoneNumber(String phoneNumber) {
         return studentRepository.findByPhone(phoneNumber);
+    }
+
+    public void updateStudentPartly(RequestStudentDTO requestStudentDTO, String phoneNumber) throws StudentNotFoundException {
+        Optional<Student> optionalStudent = studentRepository.findByPhone(phoneNumber);
+        if (optionalStudent.isEmpty()) {
+            throw new StudentNotFoundException("Student with phone number: " + phoneNumber + " not found.");
+        }
+
+        Student student = optionalStudent.get();
+        updateFieldIfNotNull(requestStudentDTO.getName(), student::setName);
+        updateFieldIfNotNull(requestStudentDTO.getSurname(), student::setSurname);
+        updateFieldIfNotNull(requestStudentDTO.getEmail(), student::setEmail);
+        updateFieldIfNotNull(requestStudentDTO.getPurposeDescription(), student::setPurposeDescription);
+        updateFieldIfNotZero(requestStudentDTO.getGrade(), student::setGrade);
+
+        studentRepository.save(student);
+    }
+
+    private <T> void updateFieldIfNotNull(T value, Consumer<T> setter) {
+        if (value != null) {
+            setter.accept(value);
+        }
+    }
+
+    private void updateFieldIfNotZero(int value, IntConsumer setter) {
+        if (value != 0) {
+            setter.accept(value);
+        }
+    }
+
+    public boolean validatePhoneNumber(String phoneNumber) {
+        if (phoneNumber == null || phoneNumber.length() != 11) {
+            return false;
+        }
+
+        return true;
     }
 }
