@@ -118,13 +118,19 @@ public class StudentController {
     }
 
     @PatchMapping(path = "/update")
-    public ResponseEntity<?> updateStudent(@RequestBody RequestStudentDTO requestStudentDTO, Principal principal) {
-        String phoneNumber = principal.getName();
+    public ResponseEntity<?> updateStudent(@RequestParam(name = "phone") String phoneNumber,@RequestBody RequestStudentDTO requestStudentDTO) {
+        //String phoneNumber = requestStudentDTO.getPhone();
+        if (!studentService.validatePhoneNumber(phoneNumber)) {
+            return ResponseEntity.badRequest().body("Invalid phone number: " + phoneNumber);
+        }
+
         try {
             studentService.updateStudentPartly(requestStudentDTO, phoneNumber);
             return ResponseEntity.ok().build();
         } catch (StudentNotFoundException e) {
             return ResponseEntity.notFound().build();
+        } catch (InvalidStudentDataException e) {
+            return new ResponseEntity<>(new ErrorHandler(400, "Update was interrupted, cause: " + e.getMessage()), HttpStatus.BAD_REQUEST);
         }
     }
 

@@ -5,6 +5,7 @@ import com.example.teacherassistant.dtos.ResponseStudentDTO;
 import com.example.teacherassistant.entities.Student;
 import com.example.teacherassistant.entities.StudentImage;
 import com.example.teacherassistant.entities.Teacher;
+import com.example.teacherassistant.myExceptions.InvalidStudentDataException;
 import com.example.teacherassistant.myExceptions.StudentNotFoundException;
 import com.example.teacherassistant.myExceptions.TeacherNotFoundException;
 import com.example.teacherassistant.repositories.StudentRepository;
@@ -109,16 +110,24 @@ public class StudentService {
         return studentRepository.findByPhone(phoneNumber);
     }
 
-    public void updateStudentPartly(RequestStudentDTO requestStudentDTO, String phoneNumber) throws StudentNotFoundException {
+    @Transactional
+    public void updateStudentPartly(RequestStudentDTO requestStudentDTO, String phoneNumber) throws StudentNotFoundException, InvalidStudentDataException {
+        requestStudentDTO.partlyValidateStudentDTO();
+
         Optional<Student> optionalStudent = studentRepository.findByPhone(phoneNumber);
         if (optionalStudent.isEmpty()) {
             throw new StudentNotFoundException("Student with phone number: " + phoneNumber + " not found.");
+        }
+
+        if (requestStudentDTO.getEmail() != null) {
+            System.out.println("current email for upd: " + requestStudentDTO.getEmail());
         }
 
         Student student = optionalStudent.get();
         updateFieldIfNotNull(requestStudentDTO.getName(), student::setName);
         updateFieldIfNotNull(requestStudentDTO.getSurname(), student::setSurname);
         updateFieldIfNotNull(requestStudentDTO.getEmail(), student::setEmail);
+        updateFieldIfNotNull(requestStudentDTO.getPhone(), student::setPhone);
         updateFieldIfNotNull(requestStudentDTO.getPurposeDescription(), student::setPurposeDescription);
         updateFieldIfNotZero(requestStudentDTO.getGrade(), student::setGrade);
 

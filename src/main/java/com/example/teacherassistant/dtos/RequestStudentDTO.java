@@ -24,9 +24,54 @@ public class RequestStudentDTO {
 
     private int grade;
 
+    public RequestStudentDTO partlyValidateStudentDTO() throws InvalidStudentDataException {
+        if (grade != 0) {
+            validateGrade();
+        }
+
+        if (name != null) {
+            validateName();
+        }
+
+        if (surname != null) {
+            validateSurname();
+        }
+
+        if (phone != null) {
+            validatePhone();
+        }
+
+        if (email != null) {
+            validateEmail();
+        }
+
+        if (purposeDescription != null) {
+            validatePurposeDescription();
+        }
+
+        return this;
+    }
+
+    private RequestStudentDTO validatePurposeDescription() throws InvalidStudentDataException {
+        if (purposeDescription == null) {
+            throw new InvalidStudentDataException("Description is null");
+        }
+
+        if (purposeDescription.length() > 120) {
+            throw new InvalidStudentDataException("Description must be less than 120 characters");
+        }
+
+        if (purposeDescription.length() <= 10) {
+            throw new InvalidStudentDataException("Description must be more than 10 characters");
+        }
+
+        return this;
+    }
+
     public RequestStudentDTO validateStudentDTO() throws InvalidStudentDataException {
         this
-                .validateNameAndSurname()
+                .validateName()
+                .validateSurname()
                 .validateEmail()
                 .validatePhone()
                 .validateGrade();
@@ -69,21 +114,25 @@ public class RequestStudentDTO {
         return this;
     }
 
-    private RequestStudentDTO validateNameAndSurname() throws InvalidStudentDataException {
+    private RequestStudentDTO validateName() throws InvalidStudentDataException {
         if (name == null || name.isEmpty()) {
             throw new InvalidStudentDataException("First name cannot be empty");
         }
 
+        if (name.length() > 15 || name.length() < 3) {
+            throw new InvalidStudentDataException("Name length must be between 3 and 15");
+        }
+
+        return this;
+    }
+
+    private RequestStudentDTO validateSurname() throws InvalidStudentDataException {
         if (surname == null || surname.isEmpty()) {
             throw new InvalidStudentDataException("Surname cannot be empty");
         }
 
         if (surname.length() < 3 || surname.length() > 15) {
             throw new InvalidStudentDataException("Surname length must be between 3 and 15");
-        }
-
-        if (name.length() > 15 || name.length() < 3) {
-            throw new InvalidStudentDataException("Name length must be between 3 and 15");
         }
 
         return this;

@@ -28,29 +28,43 @@ public class ImageController {
         return ResponseEntity.ok("Health Check OK");
     }
 
-    @PostMapping(value = "/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<?> uploadFile(@RequestParam(name = "phone") String phoneNumber, @RequestParam("file1") MultipartFile file) {
+    @PostMapping(value = "/upload/{phoneNumber}/{fileName}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<?> uploadFileByStudentPhoneNumberInMultipartFormData(
+            @PathVariable("phoneNumber") String phoneNumber,
+            @PathVariable("fileName") String fileName,
+            @RequestParam("file1") MultipartFile file) {
         try {
-            return new ResponseEntity<>(imageService.saveImage(file, phoneNumber), HttpStatus.CREATED);
+            imageService.saveImage(file, phoneNumber);
+            return new ResponseEntity<>(HttpStatus.CREATED);
         } catch (IOException e) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         } catch (StudentNotFoundException e) {
-            return  new ResponseEntity<>(new ErrorHandler(404, "student by phone not found"),HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(new ErrorHandler(404, "Student by phone not found"), HttpStatus.NOT_FOUND);
         }
     }
 
 
     //TODO: !!!!!!!!!!
     @GetMapping(value = "/download/{id}", produces = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<Resource> download(@PathVariable("id") Long id) {
+    public ResponseEntity<Resource> downloadImageByIdReturningMultipartFormData(@PathVariable("id") Long id) {
         try {
             StudentImage foundFile = imageService.findImageById(id);
             Resource resource = imageService.download(foundFile.getFileKey());
             return ResponseEntity.ok()
-                    .header("Content-Disposition", "attachment; filename=" + foundFile.getFileName())
+                    .header("Content-Disposition", "attachment")
                     .body(resource);
         } catch (IOException | ImageNotFoundException e) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
+
+    @DeleteMapping(value = "/delete-image/{id}")
+    public ResponseEntity<?> deleteImageById(@PathVariable("id") Long id) {
+        try {
+            imageService.deleteImageById(id);
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        } catch (ImageNotFoundException | IOException e) {
+            return new ResponseEntity<>(new ErrorHandler(404, e.getMessage()),HttpStatus.NOT_FOUND);
         }
     }
 

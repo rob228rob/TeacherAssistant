@@ -52,6 +52,17 @@ public class ImageService {
         return imageRepository.findById(studentByPhoneNumber.get().getId()).get();
     }
 
+    @Transactional(rollbackFor = {IOException.class, ImageNotFoundException.class})
+    public void deleteImageById(Long imageId) throws ImageNotFoundException, IOException {
+        Optional<StudentImage> imageById = imageRepository.findById(imageId);
+        if (imageById.isEmpty()) {
+            throw new ImageNotFoundException("image with id: " + imageId + " not found");
+        }
+
+        fileManager.deleteFile(imageById.get().getFileKey());
+        imageRepository.deleteById(imageId);
+    }
+
     public Resource download(String fileKey) throws IOException {
         return fileManager.loadFile(fileKey);
     }
