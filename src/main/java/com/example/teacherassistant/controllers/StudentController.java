@@ -1,13 +1,17 @@
 package com.example.teacherassistant.controllers;
 
 import com.example.teacherassistant.dtos.ErrorHandler;
+import com.example.teacherassistant.dtos.PaymentInfoDTO;
 import com.example.teacherassistant.dtos.RequestStudentDTO;
 import com.example.teacherassistant.dtos.ResponseStudentDTO;
+import com.example.teacherassistant.entities.PaymentInfo;
 import com.example.teacherassistant.entities.Student;
 import com.example.teacherassistant.entities.StudentImage;
+import com.example.teacherassistant.myExceptions.InvalidPaymentInfoDataException;
 import com.example.teacherassistant.myExceptions.InvalidStudentDataException;
 import com.example.teacherassistant.myExceptions.StudentNotFoundException;
 import com.example.teacherassistant.myExceptions.TeacherNotFoundException;
+import com.example.teacherassistant.services.PaymentInfoService;
 import com.example.teacherassistant.services.StudentService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -30,6 +34,8 @@ public class StudentController {
     private final StudentService studentService;
 
     private final ModelMapper modelMapper;
+
+    private final PaymentInfoService paymentInfoService;
 
     @GetMapping("/count")
     public ResponseEntity<Long> count() {
@@ -118,8 +124,8 @@ public class StudentController {
     }
 
     @PatchMapping(path = "/update")
-    public ResponseEntity<?> updateStudent(@RequestParam(name = "phone") String phoneNumber,@RequestBody RequestStudentDTO requestStudentDTO) {
-        //String phoneNumber = requestStudentDTO.getPhone();
+    public ResponseEntity<?> updateStudent(@RequestParam(name = "phone") String phoneNumber, @RequestBody RequestStudentDTO requestStudentDTO) {
+
         if (!studentService.validatePhoneNumber(phoneNumber)) {
             return ResponseEntity.badRequest().body("Invalid phone number: " + phoneNumber);
         }
@@ -134,4 +140,36 @@ public class StudentController {
         }
     }
 
+    @GetMapping("/payment-info/{phone}")
+    public ResponseEntity<?> getPaymentInfo(@PathVariable String phone) {
+        if (!studentService.validatePhoneNumber(phone)) {
+            return ResponseEntity.badRequest().body("Invalid phone number: " + phone);
+        }
+
+        try {
+            var paymentInfoDTO = paymentInfoService.getPaymentInfoByStudentPhone(phone);
+            if (paymentInfoDTO.isPresent()) {
+                return new ResponseEntity<>(paymentInfoDTO, HttpStatus.OK);
+            } else {
+                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            }
+        } catch (StudentNotFoundException e) {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    @PostMapping("/payment-info/{phone}")
+    public ResponseEntity<?> addPaymentInfo(@PathVariable String phone, @RequestBody PaymentInfoDTO paymentInfoDTO) {
+        if (!studentService.validatePhoneNumber(phone)) {
+            return ResponseEntity.badRequest().body("Invalid phone number: " + phone);
+        }
+
+        try {
+            paymentInfoDTO.validatePaymentInfoDTO();
+            paymentInfoService.savePaymentInfo(paymentInfoDTO, phone);
+            return new ResponseEntity<>(HttpStatus.CREATED);
+        } catch (InvalidPaymentInfoDataException | StudentNotFoundException e) {
+            return new ResponseEntity<>(new ErrorHandler(400, "Invalid payment info: " + e.getMessage()), HttpStatus.BAD_REQUEST);
+        }
+    }
 }

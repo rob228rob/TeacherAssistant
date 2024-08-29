@@ -8,7 +8,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @Table(name = "student_payment")
-@Entity
+@Entity(name = "student_payment")
 @NoArgsConstructor
 public class PaymentInfo {
 

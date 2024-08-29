@@ -153,4 +153,8 @@ public class StudentService {
 
         return true;
     }
+
+    public Optional<Student> getStudentByPhoneNumber(String studentPhoneNumber) {
+        return studentRepository.findByPhone(studentPhoneNumber);
+    }
 }
