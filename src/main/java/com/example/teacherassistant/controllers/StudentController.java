@@ -4,8 +4,6 @@ import com.example.teacherassistant.dtos.ErrorHandler;
 import com.example.teacherassistant.dtos.PaymentInfoDTO;
 import com.example.teacherassistant.dtos.RequestStudentDTO;
 import com.example.teacherassistant.dtos.ResponseStudentDTO;
-import com.example.teacherassistant.entities.PaymentInfo;
-import com.example.teacherassistant.entities.Student;
 import com.example.teacherassistant.entities.StudentImage;
 import com.example.teacherassistant.myExceptions.InvalidPaymentInfoDataException;
 import com.example.teacherassistant.myExceptions.InvalidStudentDataException;
@@ -23,7 +21,6 @@ import org.springframework.web.bind.annotation.*;
 import java.security.Principal;
 import java.util.Collection;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Slf4j
 @RestController
@@ -147,7 +144,7 @@ public class StudentController {
         }
 
         try {
-            var paymentInfoDTO = paymentInfoService.getPaymentInfoByStudentPhone(phone);
+            var paymentInfoDTO = paymentInfoService.getStudentPaymentInfoByTeacherPhone(phone);
             if (paymentInfoDTO.isPresent()) {
                 return new ResponseEntity<>(paymentInfoDTO, HttpStatus.OK);
             } else {
@@ -172,4 +169,5 @@ public class StudentController {
             return new ResponseEntity<>(new ErrorHandler(400, "Invalid payment info: " + e.getMessage()), HttpStatus.BAD_REQUEST);
         }
     }
+
 }

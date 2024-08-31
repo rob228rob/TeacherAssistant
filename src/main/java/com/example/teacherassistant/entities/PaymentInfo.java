@@ -30,7 +30,17 @@ public class PaymentInfo {
     private int lessonsPerWeek;
 
     public double calculatePricePerMonth() {
-        return pricePerHour * (minutesPerLesson / 60.0) * 4;
+        //TODO: need to up calc method with calendar
+
+        return calculatePricePerWeek() * 4;
+    }
+
+    public double calculatePricePerWeek() {
+        return pricePerHour * (minutesPerLesson / 60.0) * lessonsPerWeek;
+    }
+
+    public int lessonsPerMonth() {
+        return lessonsPerWeek * 4;
     }
 
 }

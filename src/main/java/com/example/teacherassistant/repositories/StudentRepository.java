@@ -24,6 +24,7 @@ public interface StudentRepository extends JpaRepository<Student, Long> {
     @Query("SELECT s FROM students s WHERE s.teacher.id = :teacherId")
     Collection<Student> findAllByTeacherId(Long teacherId);
 
+    @Query("SELECT s FROM students s WHERE s.phone = :phoneNumber")
     Collection<Student> findAllByTeacherPhoneNumber(String phoneNumber);
 
     void deleteByPhone(String phoneNumber);

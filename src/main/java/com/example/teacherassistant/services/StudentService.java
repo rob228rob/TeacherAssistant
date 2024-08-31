@@ -82,6 +82,10 @@ public class StudentService {
         return existByEmail || existByNameAndSurname;
     }
 
+    public Collection<Student> getCollectionStudentsByTeacherPhone(String teacherPhone) {
+        return studentRepository.findAllByTeacherPhoneNumber(teacherPhone);
+    }
+
     public List<ResponseStudentDTO> getAllStudentsByTeacherPhone(String phone) throws TeacherNotFoundException {
         Optional<Teacher> teacher = teacherService.findTeacherByPhone(phone);
         if (teacher.isEmpty()) {

@@ -3,13 +3,15 @@ package com.example.teacherassistant.controllers;
 import com.example.teacherassistant.dtos.RegisterTeacherDTO;
 import com.example.teacherassistant.dtos.ResponseTeacherDTO;
 import com.example.teacherassistant.entities.Teacher;
+import com.example.teacherassistant.myExceptions.StudentNotFoundException;
+import com.example.teacherassistant.myExceptions.TeacherNotFoundException;
+import com.example.teacherassistant.services.PaymentInfoService;
+import com.example.teacherassistant.services.StudentPaymentInfoStatsService;
 import com.example.teacherassistant.services.TeacherService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
@@ -24,10 +26,10 @@ public class TeacherController {
 
     private final TeacherService teacherService;
 
-    private final AuthenticationManager authenticationManager;
+    private final StudentPaymentInfoStatsService statsPaymentService;
 
-    private final PasswordEncoder passwordEncoder;
     private final ModelMapper modelMapper;
+    private final PaymentInfoService paymentInfoService;
 
     @GetMapping("/{id}")
     public ResponseEntity<?> getTeacherById(@PathVariable long id) {
@@ -68,4 +70,20 @@ public class TeacherController {
 
         return ResponseEntity.ok(modelMapper.map(studentByPhoneNumber.get(), ResponseTeacherDTO.class));
     }
+
+    @GetMapping("/get-salary")
+    public ResponseEntity<?> getMonthlySalaryByTeacher(Principal principal) {
+        String phoneNumber = principal.getName();
+        Optional<Teacher> teacherByPhone = teacherService.findTeacherByPhone(phoneNumber);
+        if (teacherByPhone.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+
+        try {
+            return ResponseEntity.ok(paymentInfoService.getAllPaymentInfoByTeacherPhone(phoneNumber));
+        } catch (StudentNotFoundException | TeacherNotFoundException e) {
+           return ResponseEntity.notFound().build();
+        }
+    }
+
 }

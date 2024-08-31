@@ -1,0 +1,264 @@
+/* Общие стили для страницы */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
+}
+
+body {
+    background: #f4f7fc;
+    color: #333;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+header {
+    background-color: #2d3e50;
+    padding: 1rem;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.profile-section {
+    width: 100%;
+    max-width: 1200px;
+    margin: 1rem auto;
+    padding: 0 1rem;
+    box-sizing: border-box;
+}
+
+.students-list {
+    width: 100%;
+    overflow-x: auto;
+    margin: 0;
+}
+
+.students-list table {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: #fff;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+    border-radius: 12px;
+    margin: 0;
+}
+
+footer {
+    background-color: #2d3e50;
+    color: #fff;
+    text-align: center;
+    padding: 1rem;
+    margin-top: auto;
+    box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+}
+
+nav ul {
+    list-style-type: none;
+    display: flex;
+    justify-content: flex-end;
+    padding: 0;
+}
+
+nav ul li {
+    margin: 0 1rem;
+}
+
+nav ul li a {
+    color: #fff;
+    text-decoration: none;
+    font-weight: bold;
+    transition: color 0.3s ease, text-shadow 0.3s ease;
+}
+
+nav ul li a:hover {
+    color: #ffdd59;
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+}
+
+.profile-section {
+    width: 100%;
+    max-width: 1200px;
+    margin: 2rem auto;
+    padding: 0 1rem;
+    box-sizing: border-box;
+}
+
+.profile-section h1 {
+    font-size: 2.5rem;
+    color: #2d3e50;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.add-student-button {
+    background-color: #28a745;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    text-align: center;
+    line-height: 50px;
+    cursor: pointer;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    transition: background-color 0.3s ease, transform 0.3s ease;
+    margin-bottom: 20px;
+    display: inline-block;
+}
+
+.add-student-button:hover {
+    background-color: #218838;
+    transform: scale(1.1);
+}
+
+.students-list {
+    width: 100%;
+    overflow-x: auto;
+}
+
+.students-list table {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: #fff;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+    border-radius: 12px;
+    margin-bottom: 2rem;
+    transition: box-shadow 0.3s ease;
+}
+
+.students-list table:hover {
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+}
+
+.students-list th, .students-list td {
+    padding: 1rem;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+}
+
+.students-list th {
+    background-color: #2d3e50;
+    color: #fff;
+    font-weight: bold;
+    border-top-left-radius: 12px;
+    border-top-right-radius: 12px;
+}
+
+.students-list tr:hover {
+    background-color: #f1f1f1;
+}
+
+.students-list td {
+    color: #666;
+}
+
+.salary-info-section {
+    background-color: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    margin-bottom: 20px;
+}
+
+.salary-info-section h2 {
+    margin-bottom: 15px;
+    font-size: 24px;
+    color: #4CAF50;
+}
+
+.salary-info {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-gap: 20px;
+}
+
+.salary-info p {
+    background-color: #f4f4f4;
+    padding: 15px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    font-size: 18px;
+    font-weight: 500;
+}
+
+.salary-info p strong {
+    color: #333;
+    font-weight: bold;
+}
+
+.salary-info span {
+    color: #4CAF50;
+    font-weight: bold;
+    font-size: 20px;
+}
+
+/* Стили для списка студентов */
+.profile-section {
+    background-color: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+}
+
+.profile-section h1 {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.add-student-button {
+    background-color: #4CAF50;
+    color: white;
+    padding: 10px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+}
+
+.add-student-button:hover {
+    background-color: #45a049;
+}
+
+.students-list table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+.students-list th, .students-list td {
+    padding: 15px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+}
+
+.students-list th {
+    background-color: #f4f4f4;
+    color: #333;
+}
+
+.students-list tr:hover {
+    background-color: #f1f1f1;
+}
+
+.students-list img {
+    border-radius: 50%;
+    border: 2px solid #4CAF50;
+}
+
+button {
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+button:hover {
+    background-color: #45a049;
+}
