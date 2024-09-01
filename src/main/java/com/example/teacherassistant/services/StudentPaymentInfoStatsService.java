@@ -29,8 +29,8 @@ public class StudentPaymentInfoStatsService {
                 .orElse(0.0);
     }
 
-    public Double getMonthlyPriceByStudent(String studentPhoneNumber) {
-        Optional<Student> studentByPhoneNumber = studentService.findStudentByPhoneNumber(studentPhoneNumber);
+    public Double getMonthlyPriceByStudent(String studentPhoneNumber, String teacherPhoneNumber) {
+        Optional<Student> studentByPhoneNumber = studentService.findStudentByPhoneNumber(studentPhoneNumber, teacherPhoneNumber);
         return studentByPhoneNumber
                 .map(student -> student.getPaymentInfo().calculatePricePerMonth())
                 .orElse(0.0);

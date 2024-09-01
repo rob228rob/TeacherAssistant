@@ -24,10 +24,12 @@ public interface StudentRepository extends JpaRepository<Student, Long> {
     @Query("SELECT s FROM students s WHERE s.teacher.id = :teacherId")
     Collection<Student> findAllByTeacherId(Long teacherId);
 
-    @Query("SELECT s FROM students s WHERE s.phone = :phoneNumber")
+    @Query("SELECT s FROM students s WHERE s.teacher.phoneNumber = :phoneNumber")
     Collection<Student> findAllByTeacherPhoneNumber(String phoneNumber);
 
     void deleteByPhone(String phoneNumber);
+
+    Optional<Student> findByPhoneAndTeacherPhoneNumber(String studentPhoneNumber, String teacherPhoneNumber);
 
     Optional<Student> findByPhone(String phoneNumber);
 }

@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.security.Principal;
 
 @RestController
 @RequiredArgsConstructor
@@ -32,9 +33,11 @@ public class ImageController {
     public ResponseEntity<?> uploadFileByStudentPhoneNumberInMultipartFormData(
             @PathVariable("phoneNumber") String phoneNumber,
             @PathVariable("fileName") String fileName,
-            @RequestParam("file1") MultipartFile file) {
+            @RequestParam("file1") MultipartFile file,
+            Principal principal) {
         try {
-            imageService.saveImage(file, phoneNumber);
+            String teacherPhone = principal.getName();
+            imageService.saveImage(file, phoneNumber, teacherPhone);
             return new ResponseEntity<>(HttpStatus.CREATED);
         } catch (IOException e) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);

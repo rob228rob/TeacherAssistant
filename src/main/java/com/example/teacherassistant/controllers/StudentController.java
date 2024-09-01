@@ -61,8 +61,8 @@ public class StudentController {
     }
 
     @RequestMapping(method = RequestMethod.GET, path = "/get/{phone_number}")
-    public ResponseEntity<?> getStudentByPhoneNumber(@PathVariable String phone_number) {
-        var studentById = studentService.findStudentByPhoneNumber(phone_number);
+    public ResponseEntity<?> getStudentByPhoneNumber(@PathVariable String phone_number, Principal principal) {
+        var studentById = studentService.findStudentByPhoneNumber(phone_number, principal.getName());
         if (studentById.isEmpty()) {
             return ResponseEntity.notFound().build();
         }

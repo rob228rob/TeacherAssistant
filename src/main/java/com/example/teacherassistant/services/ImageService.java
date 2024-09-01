@@ -25,12 +25,12 @@ public class ImageService {
     private final StudentService studentService;
 
     @Transactional(rollbackFor = {IOException.class, StudentNotFoundException.class})
-    public StudentImage saveImage(MultipartFile file, String phoneNumber) throws IOException, StudentNotFoundException {
+    public StudentImage saveImage(MultipartFile file, String studentPhoneNumber, String teacherPhoneNumber) throws IOException, StudentNotFoundException {
 
         String fileKey = fileManager.saveFile(file);
 
-        Student student = studentService.findStudentByPhoneNumber(phoneNumber)
-                .orElseThrow(() -> new StudentNotFoundException("Student with phone number: " + phoneNumber + " not found"));
+        Student student = studentService.findStudentByPhoneNumber(studentPhoneNumber, teacherPhoneNumber)
+                .orElseThrow(() -> new StudentNotFoundException("Student with phone number: " + studentPhoneNumber + " not found"));
 
         StudentImage studentImage = new StudentImage();
         studentImage.setFileKey(fileKey);
@@ -43,8 +43,8 @@ public class ImageService {
         return imageRepository.save(studentImage);
     }
 
-    public StudentImage getImage(String phoneNumber) throws StudentNotFoundException {
-        Optional<Student> studentByPhoneNumber = studentService.findStudentByPhoneNumber(phoneNumber);
+    public StudentImage getImage(String phoneNumber, String teacherPhone) throws StudentNotFoundException {
+        Optional<Student> studentByPhoneNumber = studentService.findStudentByPhoneNumber(phoneNumber, teacherPhone);
         if (studentByPhoneNumber.isEmpty()) {
             throw new StudentNotFoundException("Student with phone number: " + phoneNumber + " not found");
         }

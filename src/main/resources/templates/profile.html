@@ -47,11 +47,9 @@
                     const row = document.createElement('tr');
                     row.innerHTML = `
             <td><img src="${photoUrl}" alt="Photo" style="width: 50px; height: 50px; border-radius: 50%; object-fit: cover;"></td>
-            <td>${student.name}</td>
-            <td>${student.surname}</td>
+            <td>${student.name} ${student.surname}</td>
             <td>${student.phone}</td>
-            <td>${student.email}</td>
-            <td>${student.grade}</td>
+            <td>${student.grade} класс</td>
             <td>
                 <a href="/profile/info?phone=${student.phone}">
                     <button>View Details</button>
@@ -127,12 +125,12 @@
                 const monthlySalary = info.monthlySalary;//(info.pricePerHour * info.* info.minutesPerLesson / 60 * info.lessonsPerWeek * 4).toFixed(2);
                 const weeklySalary = info.weeklySalary;//(info.pricePerHour * info.minutesPerLesson / 60 * info.lessonsPerWeek).toFixed(2);
                 const lessonsPerMonth = info.lessonsPerMonth; //info.lessonsPerWeek * 4;
-                //onst lessonsPerWeek = info.lessonsPerWeek;
+                const lessonsPerWeek = info.lessonsPerMonth / 4;
 
-                document.getElementById('monthly-salary').textContent = `$${monthlySalary}`;
-                document.getElementById('weekly-salary').textContent = `$${weeklySalary}`;
+                document.getElementById('monthly-salary').textContent = `${monthlySalary} рублей`;
+                document.getElementById('weekly-salary').textContent = `${weeklySalary} рублей`;
                 document.getElementById('lessons-per-month').textContent = lessonsPerMonth;
-                //document.getElementById('lessons-per-week').textContent = lessonsPerWeek;
+                document.getElementById('lessons-per-week').textContent = lessonsPerWeek;
             }
 
             fetchStudents();
@@ -176,9 +174,7 @@
                 <tr>
                     <th>Photo</th>
                     <th>Name</th>
-                    <th>Surname</th>
                     <th>Phone</th>
-                    <th>Email</th>
                     <th>Grade</th>
                     <th>Actions</th>
                 </tr>

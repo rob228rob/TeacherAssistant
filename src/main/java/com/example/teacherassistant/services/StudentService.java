@@ -110,8 +110,8 @@ public class StudentService {
         studentRepository.deleteByPhone(phoneNumber);
     }
 
-    public Optional<Student> findStudentByPhoneNumber(String phoneNumber) {
-        return studentRepository.findByPhone(phoneNumber);
+    public Optional<Student> findStudentByPhoneNumber(String studentPhoneNumber, String teacherPhoneNumber) {
+        return studentRepository.findByPhoneAndTeacherPhoneNumber(studentPhoneNumber, teacherPhoneNumber);
     }
 
     @Transactional
