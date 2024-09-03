@@ -1,0 +1,45 @@
+databaseChangeLog:
+  - changeSet:
+      id: create-images
+      author: rob228rob
+      changes:
+        - createTable:
+            tableName: images
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+                  autoIncrement: true
+              - column:
+                  name: file_key
+                  type: varchar(255)
+                  constraints:
+                    unique: true
+                    nullable: false
+              - column:
+                  name: file_path
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: file_name
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: upload_time
+                  type: datetime
+              - column:
+                  name: mime_type
+                  type: varchar(100)
+              - column:
+                  name: size
+                  type: bigint
+              - column:
+                  name: student_id
+                  type: bigint
+                  constraints:
+                    nullable: false

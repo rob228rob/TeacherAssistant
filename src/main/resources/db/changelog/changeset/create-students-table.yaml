@@ -1,0 +1,51 @@
+databaseChangeLog:
+  - changeSet:
+      id: create-students
+      author: rob228rob
+      changes:
+        - createTable:
+            tableName: students
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+                  autoIncrement: true
+              - column:
+                  name: name
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: surname
+                  type: varchar(255)
+              - column:
+                  name: phone
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: grade
+                  type: int
+                  constraints:
+                    nullable: false
+              - column:
+                  name: description
+                  type: text
+              - column:
+                  name: email
+                  type: varchar(255)
+                  constraints:
+                    unique: true
+              - column:
+                  name: teacher_id
+                  type: bigint
+                  constraints:
+                    nullable: true
+              - column:
+                  name: payment_info_id
+                  type: bigint
+                  constraints:
+                    nullable: true

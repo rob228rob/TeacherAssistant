@@ -1,0 +1,9 @@
+databaseChangeLog:
+  - include:
+      file: db/changelog/changeset/create-students-table.yaml
+  - include:
+      file: db/changelog/changeset/create-teachers-table.yaml
+  - include:
+      file: db/changelog/changeset/create-image.yaml
+  - include:
+      file: db/changelog/changeset/create-student-payment.yaml

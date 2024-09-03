@@ -18,11 +18,13 @@
                             'Content-Type': 'application/json',
                         },
                     });
-                    if (response.ok) {
+                    if (response.status === 204) {
+                        document.querySelector('.students-list tbody').innerHTML = '<tr><td colspan="7">No students found.</td></tr>';
+                    } else if (response.ok) {
                         const students = await response.json();
                         renderStudents(students);
                     } else if (response.status === 204) {
-                        document.querySelector('.students-list tbody').innerHTML = '<tr><td colspan="7">No students found.</td></tr>';
+                        document.querySelector('.students-list tbody').innerHTML = '<tr><td colspan="7">No students found</td></tr>';
                     } else {
                         console.error('Error fetching students:', response.statusText);
                         document.querySelector('.students-list tbody').innerHTML = `<tr><td colspan="7">Error fetching data with status: ${response.statusText}.</td></tr>`;

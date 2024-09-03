@@ -1,0 +1,64 @@
+databaseChangeLog:
+  - changeSet:
+      id: 1
+      author: yourname
+      changes:
+        - createTable:
+            tableName: lessons
+            columns:
+              - column:
+                  name: id
+                  type: integer
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: title
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: subject
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: date
+                  type: date
+                  constraints:
+                    nullable: false
+              - column:
+                  name: start_time
+                  type: time
+                  constraints:
+                    nullable: true
+              - column:
+                  name: end_time
+                  type: time
+                  constraints:
+                    nullable: true
+              - column:
+                  name: teacher_id
+                  type: integer
+                  constraints:
+                    nullable: true
+              - column:
+                  name: student_id
+                  type: integer
+                  constraints:
+                    nullable: true
+        - addForeignKeyConstraint:
+            baseTableName: lessons
+            baseColumnNames: teacher_id
+            constraintName: fk_lessons_teacher
+            referencedTableName: teachers
+            referencedColumnNames: id
+            onDelete: SET NULL
+        - addForeignKeyConstraint:
+            baseTableName: lessons
+            baseColumnNames: student_id
+            constraintName: fk_lessons_student
+            referencedTableName: students
+            referencedColumnNames: id
+            onDelete: SET NULL

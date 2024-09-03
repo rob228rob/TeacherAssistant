@@ -1,14 +1,17 @@
-# Используем официальный образ OpenJDK в качестве базового
-FROM openjdk:17-jdk-alpine
+FROM maven:3.9.9-eclipse-temurin-17 as builder
+WORKDIR /opt/app
+COPY mvnw pom.xml ./
+COPY ./src ./src
+RUN mvn clean install -DskipTests
 
-# Устанавливаем рабочую директорию
-WORKDIR /app
+FROM eclipse-temurin:17-jdk
 
-# Копируем файл jar в контейнер
-COPY target/your-spring-boot-app.jar /app/app.jar
+WORKDIR /opt/app
 
-# Указываем, какой порт будет прослушивать приложение внутри контейнера
+COPY --from=builder /opt/app/target/*.jar /opt/app/*.jar
+
+COPY src/main/resources/image-storage /opt/app/image-storage
+
 EXPOSE 8080
 
-# Команда для запуска приложения
-ENTRYPOINT ["java", "-jar", "/app/app.jar"]
+ENTRYPOINT ["java", "-jar", "/opt/app/*.jar"]

@@ -20,7 +20,7 @@ import java.util.UUID;
 @Slf4j
 public class FilesystemFileManager implements FileManager {
 
-    @Value("${app.filesystem.path}")
+    @Value("${app.image-storage.filesystem.path}")
     private String pathToStorage;
 
     private Path imageStoragePath;

@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
 import java.util.Date;
 
 @Data
@@ -26,7 +27,7 @@ public class StudentImage {
     private String fileName;
 
     @Column(name = "upload_time")
-    private Date uploadTime;
+    private LocalDate uploadTime;
 
     @Column(name = "mime_type")
     private String mimeType;

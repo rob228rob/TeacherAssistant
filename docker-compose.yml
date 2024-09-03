@@ -1,25 +1,37 @@
+
 services:
   app:
-    build: .idea
+    restart: always
+    build: .
     ports:
-      - "8080:8080"
-    environment:
-      - SPRING_PROFILES_ACTIVE=prod
-      - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/postgres
-      - SPRING_DATASOURCE_USERNAME=postgres
-      - SPRING_DATASOURCE_PASSWORD=Roba1221
+      - "8080:8088"
     depends_on:
-      - db
+      - main_db
 
-  db:
-    image: postgres:15-alpine
     environment:
-      POSTGRES_PASSWORD: postgres
-      POSTGRES_USER: postgres
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://main_db:5432/main_db
+      - SPRING_DATASOURCE_USERNAME=postgres
+      - SPRING_DATASOURCE_PASSWORD=postgres
+    volumes:
+      - type: volume
+        source: image_storage
+        target: /opt/app/image-storage
+
+  main_db:
+    image: postgres
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_DB=main_db
+      - POSTGRES_PASSWORD=postgres
     ports:
       - "5432:5432"
     volumes:
-      - pgdata:/var/lib/postgresql/data
+      - pg_data:/var/lib/postgresql/data
+
+networks:
+  my-net:
+    driver: bridge
 
 volumes:
-  pgdata:
+  image_storage:
+  pg_data:
