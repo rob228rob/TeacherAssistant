@@ -36,6 +36,7 @@
                             const student = await response.json();
                             await renderStudentDetails(student);
                             await fetchPaymentInfo();  // Загрузка информации о платеже
+                            await fetchLessons(student.id);
                         } else {
                             console.error('Error fetching student details:', response.statusText);
                             document.querySelector('.student-details-card').innerHTML = `<p>Error fetching data with status: ${response.status}.</p>`;
@@ -44,6 +45,63 @@
                         console.error('Fetch error:', error);
                         document.querySelector('.student-details-card').innerHTML = '<p>Error fetching data</p>';
                     }
+                }
+
+                async function fetchLessons(studentId) {
+                    try {
+                        const response = await fetch(`/api/v1/t.assist/lessons/get-all/${studentId}`);
+                        if (response.ok) {
+                            const lessons = await response.json();
+                            await renderLessons(lessons);
+                        } else if (response.status === 404) {
+                            await renderNoLessons();
+                        }
+                        else {
+                            console.error('Error fetching lessons:', response.statusText);
+                            document.querySelector('.lessons-section').innerHTML = `<p>No lessons found.</p>`;
+                        }
+                    } catch (error) {
+                        console.error('Fetch error:', error);
+                    }
+                }
+
+                async function renderNoLessons() {
+                    // Получаем ссылку на секцию с уроками
+                    const lessonsSection = document.querySelector('.lessons-section');
+
+                    lessonsSection.innerHTML = '';
+
+                    const noLessonsMessage = document.createElement('div');
+                    noLessonsMessage.className = 'no-lessons';
+                    noLessonsMessage.innerHTML = `
+        <h2>No Lessons Available</h2>
+        <p>It looks like there are no lessons available at the moment. Please check back later.</p>
+    `;
+
+                    // Добавляем сообщение в секцию
+                    lessonsSection.appendChild(noLessonsMessage);
+                }
+
+
+                async function renderLessons(lessons) {
+                    const lessonsSection = document.querySelector('.lessons-section');
+                    lessonsSection.innerHTML = ''; // Очищаем перед добавлением новых данных
+
+                    lessons.forEach(lesson => {
+                        const lessonCard = document.createElement('div');
+                        lessonCard.className = 'lesson-card';
+
+                        lessonCard.innerHTML = `
+                        <h3>${lesson.title}</h3>
+                        <p><strong>Subject:</strong> ${lesson.subject}</p>
+                        <p><strong>Date:</strong> ${lesson.date}</p>
+                        <p><strong>Start Time:</strong> ${lesson.startTime}</p>
+                        <p><strong>End Time:</strong> ${lesson.endTime}</p>
+                        <p><strong>Description:</strong> ${lesson.description}</p>
+                    `;
+
+                        lessonsSection.appendChild(lessonCard);
+                    });
                 }
 
                 async function fetchPaymentInfo() {
@@ -89,6 +147,7 @@
                 async function renderStudentDetails(student) {
                     document.querySelector('.student-details-card').innerHTML = `
         <h2>${student.name} ${student.surname}</h2>
+        <p><strong>ID: </strong> <span id="studentId">${student.id}</span></p> <!-- Отображение studentId -->
         <p><strong>Phone:</strong> <span id="phone">${student.phone}</span>
             <button class="edit-button" data-field="phone">Edit</button></p>
         <p><strong>Email:</strong> <span id="email">${student.email}</span>
@@ -103,6 +162,8 @@
         <div>
             <img id="thumbnail" src="" alt="Student Image" style="width: 150px; height: 150px; border-radius: 8px; cursor: pointer;">
         </div>
+        <!-- Кнопка для добавления уроков -->
+        <button id="add-lesson-btn" class="add-lesson-button">Add New Lesson</button>
 
         <!-- Модальное окно для просмотра изображения -->
         <div id="imageModal" class="modal">
@@ -110,6 +171,13 @@
             <img class="modal-content" id="modalImage">
         </div>
     `;
+
+                    // Логика для редиректа на добавление уроков
+                    const addLessonBtn = document.getElementById('add-lesson-btn');
+                    addLessonBtn.addEventListener('click', function() {
+                        const studentId = student.id; // Используем student.id для формирования URL
+                        window.location.href = `/lessons/add-new/${studentId}`;
+                    });
 
                     // Загружаем изображение студента и устанавливаем его в <img>
                     const thumbnail = document.getElementById('thumbnail');
@@ -142,6 +210,7 @@
                         });
                     });
                 }
+
 
                 function editField(field, student) {
                     const fieldElement = document.getElementById(field);
@@ -378,6 +447,10 @@
             <!-- Информация о студенте будет загружена и отображена здесь -->
         </div>
     </section>
+    <section class="lessons-section">
+        <!-- Карточки уроков будут рендериться здесь -->
+    </section>
+
 </main>
 <footer>
     <p>&copy; 2024 Teacher Assistant. All rights reserved.</p>

@@ -10,7 +10,7 @@ WORKDIR /opt/app
 
 COPY --from=builder /opt/app/target/*.jar /opt/app/*.jar
 
-COPY src/main/resources/image-storage /opt/app/image-storage
+COPY src/main/resources/image-storage /opt/app/src/main/resources/image-storage
 
 EXPOSE 8080
 

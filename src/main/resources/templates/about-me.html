@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About Me</title>
+    <style>
+        /* Общие стили */
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f4f7fa;
+            color: #333;
+            margin: 0;
+            padding: 0;
+            line-height: 1.6;
+        }
+        header {
+            background-color: #34495e;
+            padding: 1rem;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        nav ul {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+        }
+        nav ul li {
+            margin: 0 1rem;
+        }
+        nav ul li a {
+            text-decoration: none;
+            color: #ecf0f1;
+            font-weight: bold;
+            padding: 8px 16px;
+            border-radius: 20px;
+            transition: background-color 0.3s ease;
+        }
+        nav ul li a:hover {
+            background-color: #1abc9c;
+        }
+        main {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 1rem;
+            background-color: #fff;
+            border-radius: 16px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        h1, h2, h3 {
+            color: #2c3e50;
+            text-align: center;
+        }
+        p {
+            text-align: center;
+        }
+        section {
+            margin-bottom: 2rem;
+        }
+        .welcome-section {
+            padding: 2rem;
+            background-color: #ecf0f1;
+            border-radius: 16px;
+        }
+        .technologies-section img {
+            margin: 0 10px;
+            transition: transform 0.3s ease;
+        }
+        .technologies-section img:hover {
+            transform: scale(1.1);
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+        }
+        th, td {
+            padding: 1rem;
+            border: 1px solid #bdc3c7;
+            text-align: left;
+        }
+        th {
+            background-color: #2980b9;
+            color: #fff;
+        }
+        td a {
+            color: #2980b9;
+            text-decoration: none;
+        }
+        td a:hover {
+            text-decoration: underline;
+        }
+        footer {
+            background-color: #34495e;
+            color: #ecf0f1;
+            text-align: center;
+            padding: 1rem;
+            border-radius: 0 0 16px 16px;
+        }
+    </style>
+</head>
+<body>
+<header>
+    <nav>
+        <ul>
+            <li><a href="/home">Home</a></li>
+            <li><a href="/profile">Profile</a></li>
+            <li><a href="/settings">Settings</a></li>
+            <li><a href="/about">About Me</a></li> <!-- Текущая страница -->
+            <li><a href="/logout">Logout</a></li>
+        </ul>
+    </nav>
+</header>
+
+<main>
+    <section class="welcome-section">
+        <h1>🌟 Welcome to my GitHub! 🌟</h1>
+        <p>Hi, I'm <strong>Robert</strong>. I'm a 19 y.o. developer focused on Java and C++. Explore my projects and let's collaborate!</p>
+    </section>
+
+    <section class="technologies-section">
+        <h2>🛠️ Technologies and Tools</h2>
+        <p align="center">
+            <img src="https://img.icons8.com/color/48/000000/java-coffee-cup-logo.png" alt="Java"/>
+            <img src="https://img.icons8.com/color/48/000000/c-programming.png" alt="C"/>
+            <img src="https://img.icons8.com/color/48/000000/c-plus-plus-logo.png" alt="C++"/>
+            <img src="https://img.icons8.com/color/48/000000/spring-logo.png" alt="Spring Boot"/>
+            <img src="https://img.icons8.com/color/48/000000/postgreesql.png" alt="PostgreSQL"/>
+            <img src="https://img.icons8.com/color/48/000000/docker.png" alt="Docker"/>
+            <img src="https://img.icons8.com/ios-filled/50/FF6F00/api.png" alt="REST API"/>
+            <img src="https://img.icons8.com/color/48/000000/javascript.png" alt="JavaScript"/>
+        </p>
+    </section>
+
+    <section class="projects-section">
+        <h2>💼 My Projects</h2>
+        <table>
+            <tr>
+                <th>Project</th>
+                <th>Description</th>
+            </tr>
+            <tr>
+                <td><a href="https://github.com/rob228rob/TeacherAssistant">Students Management System</a></td>
+                <td>Platform for managing student info, lesson scheduling, and payment tracking.</td>
+            </tr>
+            <tr>
+                <td><a href="https://github.com/rob228rob/ChargingScootersProblem">ChargingScooter</a></td>
+                <td>Java project to find efficient routes between scooters and charging stations.</td>
+            </tr>
+            <tr>
+                <td><a href="https://github.com/rob228rob/cw_os">B-tree Database</a></td>
+                <td>C++ project database with B-tree data structure.</td>
+            </tr>
+        </table>
+    </section>
+
+    <section class="contact-section">
+        <h2>📫 Contact</h2>
+        <p><a href="https://t.me/rob229rob">Telegram</a></p>
+    </section>
+</main>
+
+<footer>
+    <p>&copy; 2024 Robert. All rights reserved.</p>
+</footer>
+</body>
+</html>

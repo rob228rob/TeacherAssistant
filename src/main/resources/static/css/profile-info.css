@@ -50,6 +50,80 @@ main {
     text-align: center;
 }
 
+/* Стили для секции с уроками */
+.lessons-section {
+    margin-top: 30px;
+}
+
+/* Стили для карточек уроков */
+.lesson-card {
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    margin: 15px;
+    width: 250px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.lesson-card h3 {
+    font-size: 1.2rem;
+    margin-bottom: 10px;
+    color: #333;
+}
+
+.lesson-card p {
+    font-size: 0.9rem;
+    margin: 5px 0;
+    color: #555;
+}
+
+.lesson-card strong {
+    color: #333;
+}
+
+/* Flexbox стили для организации карточек */
+.lessons-section {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.no-lessons {
+    text-align: center;
+    background-color: #f8d7da;
+    color: #721c24;
+    padding: 20px;
+    border-radius: 8px;
+    margin-top: 30px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.no-lessons h2 {
+    font-size: 1.5rem;
+    margin-bottom: 10px;
+}
+
+.no-lessons p {
+    font-size: 1rem;
+    color: #555;
+}
+
+
+@media (max-width: 768px) {
+    .lessons-section {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .lesson-card {
+        width: 90%;
+    }
+}
+
 .student-details-section {
     max-width: 800px;
     width: 100%;
@@ -249,6 +323,36 @@ input[type="text"]:focus {
     transform: scale(1.1);
     cursor: pointer;
 }
+/*
+button for adding new lessons
+ */
+.add-lesson-button {
+    background-color: #4CAF50; /* Основной цвет кнопки (зелёный) */
+    color: white; /* Цвет текста */
+    border: none; /* Убираем стандартные границы */
+    padding: 12px 24px; /* Внутренние отступы */
+    font-size: 16px; /* Размер текста */
+    font-weight: bold; /* Жирный шрифт */
+    border-radius: 8px; /* Закруглённые углы */
+    cursor: pointer; /* Курсор в виде указателя */
+    transition: background-color 0.3s, box-shadow 0.3s; /* Плавные переходы для эффектов */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Лёгкая тень */
+    margin-top: 20px; /* Отступ сверху */
+}
+
+/* Эффект наведения */
+.add-lesson-button:hover {
+    background-color: #45a049; /* Более тёмный оттенок зелёного */
+    box-shadow: 0 6px 8px rgba(0, 0, 0, 0.2); /* Увеличиваем тень при наведении */
+}
+
+/* Эффект при нажатии */
+.add-lesson-button:active {
+    background-color: #3e8e41; /* Ещё темнее при нажатии */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); /* Уменьшаем тень */
+    transform: translateY(2px); /* Лёгкий эффект нажатия */
+}
+
 
 /* Стили для модального окна */
 .modal {

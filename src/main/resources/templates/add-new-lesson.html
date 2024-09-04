@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Lesson</title>
+    <link rel="stylesheet" href="/css/add-new-lesson.css"> <!-- Подключаем общий CSS файл -->
+</head>
+<body>
+<header>
+    <nav>
+        <ul>
+            <li><a href="/home">Home</a></li>
+            <li><a href="/profile">Profile</a></li>
+            <li><a href="/settings">Settings</a></li>
+            <li><a href="/about">About Me</a></li>
+            <li><a href="/logout">Logout</a></li>
+        </ul>
+    </nav>
+</header>
+
+<main>
+    <section class="form-section">
+        <h1>Add New Lesson</h1>
+        <form id="lessonForm">
+            <input type="hidden" id="studentId" name="studentId">
+            <div class="form-group">
+                <label for="title">Title:</label>
+                <input type="text" id="title" name="title" required>
+            </div>
+            <div class="form-group">
+                <label for="subject">Subject:</label>
+                <input type="text" id="subject" name="subject" required>
+            </div>
+            <div class="form-group">
+                <label for="date">Date:</label>
+                <input type="date" id="date" name="date" required>
+            </div>
+            <div class="form-group">
+                <label for="startTime">Start Time:</label>
+                <input type="time" id="startTime" name="startTime" required>
+            </div>
+            <div class="form-group">
+                <label for="endTime">End Time:</label>
+                <input type="time" id="endTime" name="endTime" required>
+            </div>
+            <div class="form-group">
+                <label for="description">Description:</label>
+                <textarea id="description" name="description" rows="4"></textarea>
+            </div>
+            <button type="button" class="submit-button" onclick="submitLesson()">Add Lesson</button>
+        </form>
+    </section>
+</main>
+
+<footer>
+    <p>&copy; 2024 Your Company. All rights reserved.</p>
+</footer>
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        // Извлекаем studentId из URL
+        const path = window.location.pathname;
+        const segments = path.split('/');
+        const studentId = segments[segments.length - 1];
+
+        console.log('Student ID extracted from URL:', studentId); // Для отладки
+
+        if (studentId) {
+            // Устанавливаем studentId в скрытое поле формы
+            document.getElementById('studentId').value = studentId;
+        } else {
+            console.warn('No student ID found in the URL'); // Для отладки
+        }
+    });
+
+    async function submitLesson() {
+        // Получаем данные из формы
+        const lessonForm = document.getElementById('lessonForm');
+        const formData = new FormData(lessonForm);
+
+        // Формируем объект для отправки
+        const lessonRequestDTO = {
+            studentId: formData.get('studentId'),
+            title: formData.get('title'),
+            subject: formData.get('subject'),
+            date: formData.get('date'),
+            startTime: formData.get('startTime'),
+            endTime: formData.get('endTime'),
+            description: formData.get('description')
+        };
+
+        try {
+            const response = await fetch('/api/v1/t.assist/lessons/add-new', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(lessonRequestDTO)
+            });
+
+            if (response.ok) {
+                alert('Lesson added successfully!');
+                window.location.href = `/profile-info?id=${lessonRequestDTO.studentId}`;
+            } else {
+                alert('Failed to add lesson.');
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            alert('An error occurred while adding the lesson.');
+        }
+    }
+</script>
+
+</body>
+</html>

@@ -1,0 +1,167 @@
+/* Общие стили */
+body {
+    font-family: 'Arial', sans-serif;
+    background-color: #f0f4f8;
+    color: #333;
+    margin: 0;
+    padding: 0;
+}
+
+header {
+    background-color: #2c3e50;
+    padding: 1rem;
+}
+
+nav ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+}
+
+nav ul li {
+    margin: 0 1rem;
+}
+
+nav ul li a {
+    text-decoration: none;
+    color: #ecf0f1;
+    font-weight: bold;
+}
+
+nav ul li a:hover {
+    color: #1abc9c;
+}
+
+/* Стили для основного контента */
+main {
+    max-width: 1200px;
+    margin: 2rem auto;
+    padding: 0 1rem;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+h1, h2, h3 {
+    color: #2c3e50;
+}
+
+section {
+    margin-bottom: 2rem;
+}
+
+.welcome-section, .about-section, .technologies-section, .stats-section, .projects-section, .contact-section, .fun-fact-section {
+    padding: 2rem;
+    background-color: #ecf0f1;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    margin-bottom: 2rem;
+}
+
+.welcome-section h1 {
+    text-align: center;
+    color: #2980b9;
+}
+
+.about-section ul {
+    list-style-type: disc;
+    padding-left: 20px;
+}
+
+.about-section ul li {
+    margin-bottom: 0.5rem;
+}
+
+/* Стили для технологий */
+.technologies-section p {
+    text-align: center;
+    margin: 1rem 0;
+}
+
+.technologies-section img {
+    margin: 0 10px;
+    transition: transform 0.3s ease;
+}
+
+.technologies-section img:hover {
+    transform: scale(1.1);
+}
+
+/* Стили для таблицы проектов */
+.projects-section table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 1rem;
+}
+
+.projects-section th, .projects-section td {
+    padding: 1rem;
+    border: 1px solid #bdc3c7;
+    text-align: left;
+}
+
+.projects-section th {
+    background-color: #2980b9;
+    color: #fff;
+}
+
+.projects-section td a {
+    color: #2980b9;
+    text-decoration: none;
+}
+
+.projects-section td a:hover {
+    text-decoration: underline;
+}
+
+/* Стили для контактов */
+.contact-section p {
+    text-align: center;
+    font-size: 1.2rem;
+}
+
+.contact-section a {
+    color: #2980b9;
+    text-decoration: none;
+}
+
+.contact-section a:hover {
+    text-decoration: underline;
+}
+
+/* Стили для подвала */
+footer {
+    background-color: #2c3e50;
+    color: #ecf0f1;
+    text-align: center;
+    padding: 1rem;
+    margin-top: 2rem;
+    border-radius: 0 0 8px 8px;
+}
+
+/* Адаптивный дизайн */
+@media (max-width: 768px) {
+    main {
+        margin: 1rem;
+        padding: 1rem;
+    }
+
+    .welcome-section, .about-section, .technologies-section, .stats-section, .projects-section, .contact-section, .fun-fact-section {
+        padding: 1rem;
+    }
+
+    .technologies-section img {
+        margin: 5px;
+        width: 40px;
+    }
+
+    nav ul {
+        flex-direction: column;
+    }
+
+    nav ul li {
+        margin: 0.5rem 0;
+    }
+}
