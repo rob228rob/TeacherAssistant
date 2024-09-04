@@ -5,13 +5,14 @@ Everyone can register and use service to monitor students, payment and etc
 ```bash
 # to start a project u need:
 
-docker-compose up -d
+docker-compose down 
+docker-compose up --build
 ```
 
-# Attention :
+# Attention! :
 
 ```angular2html
-project is in process of developing right now!
+project is in process of developing right now! But i want to deploy it soon!
 
 be patient, please
 ```
