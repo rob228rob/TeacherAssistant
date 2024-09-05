@@ -172,7 +172,7 @@
 
                     if (response.ok) {
                         alert('Lesson successfully hidden!');
-                        await fetchCurrentTeacher(); // Обновляем список уроков после скрытия
+                        await fetchCurrentTeacher();
                     } else {
                         alert(`Failed to hide lesson. Error: ${response.statusText}`);
                     }
