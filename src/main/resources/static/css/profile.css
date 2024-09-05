@@ -154,6 +154,88 @@ nav ul li a:hover {
     color: #666;
 }
 
+/* Основные стили для карточек */
+.lesson-card {
+    background-color: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    margin: 10px;
+    transition: transform 0.2s ease-in-out;
+    flex: 1 1 auto;
+    max-width: 100%;
+    min-width: 200px;
+}
+
+/* Обводка по статусу */
+.status-pending {
+    border: 4px solid #ffcc00; /* Желтый для ожидания */
+}
+
+.status-in-progress {
+    border: 4px solid #00ccff; /* Голубой для выполнения */
+}
+
+.status-completed {
+    border: 4px solid #4caf50; /* Зеленый для завершенных */
+}
+
+.status-cancelled {
+    border: 4px solid #ff5722; /* Оранжевый для отмененных */
+}
+
+/* Стили для статусов и кнопок, как ранее */
+.lesson-card h3 {
+    font-size: 1.5rem;
+    margin-bottom: 10px;
+    color: #333333;
+}
+
+.lesson-card p {
+    margin: 8px 0;
+    font-size: 1rem;
+    color: #666666;
+}
+
+.cancel-lesson-button {
+    background-color: #ff5c5c;
+    color: #ffffff;
+    border: none;
+    padding: 10px 15px;
+    font-size: 1rem;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    margin-top: 15px;
+}
+
+.cancel-lesson-button:disabled {
+    background-color: #cccccc;
+    cursor: not-allowed;
+}
+
+.cancel-lesson-button:hover:not(:disabled) {
+    background-color: #ff3c3c;
+}
+
+.cancel-lesson-button:active {
+    background-color: #ff1c1c;
+}
+
+.lesson-card input[type="checkbox"] {
+    margin-right: 10px;
+    transform: scale(1.2);
+    accent-color: #007bff; /* Стандартный цвет акцента для чекбокса */
+}
+
+.lessons-section {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    padding: 20px;
+    background-color: #f7f7f7;
+}
+
 .salary-info-section {
     background-color: white;
     border: 1px solid #ddd;

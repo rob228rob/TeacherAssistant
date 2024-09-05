@@ -1,5 +1,6 @@
 package com.example.teacherassistant.lessonsPackage;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -13,7 +14,10 @@ import java.time.LocalTime;
 @AllArgsConstructor
 @NoArgsConstructor
 public class LessonResponseDTO {
-    private Long studentId;
+
+    private Long id;
+
+    private LessonStatus lessonStatus;
 
     private String title;
 
@@ -26,4 +30,9 @@ public class LessonResponseDTO {
     private LocalTime endTime;
 
     private String description;
+
+    @JsonProperty("isHidden")
+    private boolean isHidden;
+
+    private Long studentId;
 }

@@ -1,6 +1,6 @@
 package com.example.teacherassistant.common.controllers;
 
-import com.example.teacherassistant.common.dtos.RegisterTeacherDTO;
+import com.example.teacherassistant.teacherPackage.RegisterTeacherDTO;
 import com.example.teacherassistant.teacherPackage.TeacherService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

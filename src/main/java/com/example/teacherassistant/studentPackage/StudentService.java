@@ -1,5 +1,6 @@
 package com.example.teacherassistant.studentPackage;
 
+import com.example.teacherassistant.common.myExceptions.InvalidTeacherCredentials;
 import com.example.teacherassistant.imagePackage.StudentImage;
 import com.example.teacherassistant.teacherPackage.Teacher;
 import com.example.teacherassistant.common.myExceptions.InvalidStudentDataException;
@@ -101,8 +102,21 @@ public class StudentService {
                 .toList();
     }
 
-    @Transactional
-    public void deleteStudentByPhone(String phoneNumber) {
+    @Transactional(rollbackOn = {StudentNotFoundException.class, TeacherNotFoundException.class, InvalidStudentDataException.class})
+    public void deleteStudentByPhone(String phoneNumber, String teacherPhone) throws TeacherNotFoundException, StudentNotFoundException, InvalidTeacherCredentials {
+        var teacher = teacherService.findTeacherByPhone(teacherPhone);
+        if (teacher.isEmpty()) {
+            throw new TeacherNotFoundException("Teacher with phone: " + teacherPhone + "not found");
+        }
+        var studentToDelete = getStudentByPhoneNumber(phoneNumber);
+        if (studentToDelete.isEmpty()) {
+            throw  new StudentNotFoundException("Student with phone: " + phoneNumber + " does not exist");
+        }
+
+        if (!teacher.get().getId().equals(studentToDelete.get().getTeacher().getId())) {
+            throw new InvalidTeacherCredentials("Invalid access to this endpoint");
+        }
+
         studentRepository.deleteByPhone(phoneNumber);
     }
 
@@ -160,5 +174,9 @@ public class StudentService {
 
     public boolean checkIfStudentExistById(long id) {
         return studentRepository.existsById(id);
+    }
+
+    public Teacher findTeacherByStudentId(long studentId) throws StudentNotFoundException {
+        return studentRepository.findTeacherByStudentId(studentId).orElseThrow(() -> new StudentNotFoundException("Student with id: " + studentId + " not found"));
     }
 }

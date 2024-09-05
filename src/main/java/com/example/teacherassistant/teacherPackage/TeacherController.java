@@ -1,7 +1,5 @@
 package com.example.teacherassistant.teacherPackage;
 
-import com.example.teacherassistant.common.dtos.RegisterTeacherDTO;
-import com.example.teacherassistant.common.dtos.ResponseTeacherDTO;
 import com.example.teacherassistant.common.myExceptions.StudentNotFoundException;
 import com.example.teacherassistant.common.myExceptions.TeacherNotFoundException;
 import com.example.teacherassistant.paymentInfoPackage.PaymentInfoService;

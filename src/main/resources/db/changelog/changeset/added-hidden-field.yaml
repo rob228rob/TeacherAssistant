@@ -1,0 +1,14 @@
+databaseChangeLog:
+  - changeSet:
+      id: is-hidden-field
+      author: rob228rob
+      changes:
+        - addColumn:
+            tableName: lessons
+            columns:
+              - column:
+                  name: is_hidden
+                  type: boolean
+                  defaultValueBoolean: false
+                  constraints:
+                    nullable: false

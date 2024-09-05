@@ -7,3 +7,5 @@ databaseChangeLog:
       file: db/changelog/changeset/create-image.yaml
   - include:
       file: db/changelog/changeset/create-student-payment.yaml
+  - include:
+      file: db/changelog/changeset/added-hidden-field.yaml

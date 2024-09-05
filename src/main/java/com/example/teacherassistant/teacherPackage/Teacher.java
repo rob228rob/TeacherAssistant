@@ -18,7 +18,7 @@ public class Teacher implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
-    private long id;
+    private Long id;
 
     @Column(name = "phone_number", unique = true, nullable = false)
     private String phoneNumber;

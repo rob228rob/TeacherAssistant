@@ -1,6 +1,5 @@
 package com.example.teacherassistant.teacherPackage;
 
-import com.example.teacherassistant.common.dtos.RegisterTeacherDTO;
 import com.example.teacherassistant.studentPackage.Student;
 import com.example.teacherassistant.common.myExceptions.TeacherNotFoundException;
 import lombok.RequiredArgsConstructor;

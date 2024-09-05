@@ -3,10 +3,7 @@ package com.example.teacherassistant.lessonsPackage;
 import com.example.teacherassistant.studentPackage.Student;
 import com.example.teacherassistant.teacherPackage.Teacher;
 import jakarta.persistence.*;
-import lombok.Data;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -15,6 +12,7 @@ import java.time.LocalTime;
 @NoArgsConstructor
 @Getter
 @Setter
+@ToString
 public class Lesson {
 
     @Id
@@ -43,6 +41,9 @@ public class Lesson {
     @Column(name = "description")
     private String description;  // Описание урока/таска для дополнительных деталей
 
+    @Column(name = "is_hidden")
+    private boolean isHidden;
+
     @ManyToOne
     @JoinColumn(name = "teacher_id")
     private Teacher teacher;
@@ -51,15 +52,38 @@ public class Lesson {
     @JoinColumn(name = "student_id")
     private Student student;
 
+    public void cancelLesson() {
+        if (this.status == null) {
+            return;
+        }
+
+        this.status = LessonStatus.CANCELLED;
+    }
+
     public void updateStatus() {
+        if (this.status == LessonStatus.CANCELLED) {
+            return;
+        }
+
+        LocalDate today = LocalDate.now();
         LocalTime now = LocalTime.now();
 
-        if (now.isBefore(startTime)) {
+        if (date.isAfter(today)) {
+
             this.status = LessonStatus.PENDING;
-        } else if (now.isAfter(endTime)) {
+        } else if (date.isBefore(today)) {
+
             this.status = LessonStatus.COMPLETED;
         } else {
-            this.status = LessonStatus.IN_PROGRESS;
+
+            if (now.isBefore(startTime)) {
+                this.status = LessonStatus.PENDING;
+            } else if (now.isAfter(endTime)) {
+                this.status = LessonStatus.COMPLETED;
+            } else {
+                this.status = LessonStatus.IN_PROGRESS;
+            }
         }
     }
+
 }

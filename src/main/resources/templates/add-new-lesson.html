@@ -101,7 +101,7 @@
 
             if (response.ok) {
                 alert('Lesson added successfully!');
-                window.location.href = `/profile-info?id=${lessonRequestDTO.studentId}`;
+                window.location.href = `/profile/${lessonRequestDTO.studentId}`;
             } else {
                 alert('Failed to add lesson.');
             }

@@ -1,4 +1,4 @@
-package com.example.teacherassistant.common.dtos;
+package com.example.teacherassistant.teacherPackage;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;

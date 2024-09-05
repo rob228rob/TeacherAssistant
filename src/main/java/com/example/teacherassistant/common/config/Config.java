@@ -2,6 +2,8 @@ package com.example.teacherassistant.common.config;
 
 import com.example.teacherassistant.common.services.FileManager;
 import com.example.teacherassistant.common.services.FilesystemFileManager;
+import com.example.teacherassistant.lessonsPackage.Lesson;
+import com.example.teacherassistant.lessonsPackage.LessonRequestDTO;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.modelmapper.ModelMapper;
@@ -13,7 +15,12 @@ public class Config {
 
     @Bean
     public ModelMapper modelMapper() {
-        return new ModelMapper();
+        ModelMapper modelMapper = new ModelMapper();
+
+        modelMapper.typeMap(LessonRequestDTO.class, Lesson.class)
+                .addMappings(mapper -> mapper.skip(Lesson::setId));
+
+        return modelMapper;
     }
 
     @Bean

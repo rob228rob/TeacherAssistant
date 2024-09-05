@@ -2,11 +2,8 @@ package com.example.teacherassistant.studentPackage;
 
 import com.example.teacherassistant.common.dtos.ErrorHandler;
 import com.example.teacherassistant.common.dtos.PaymentInfoDTO;
+import com.example.teacherassistant.common.myExceptions.*;
 import com.example.teacherassistant.imagePackage.StudentImage;
-import com.example.teacherassistant.common.myExceptions.InvalidPaymentInfoDataException;
-import com.example.teacherassistant.common.myExceptions.InvalidStudentDataException;
-import com.example.teacherassistant.common.myExceptions.StudentNotFoundException;
-import com.example.teacherassistant.common.myExceptions.TeacherNotFoundException;
 import com.example.teacherassistant.paymentInfoPackage.PaymentInfoService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -87,15 +84,24 @@ public class StudentController {
     }
 
     @RequestMapping(method = RequestMethod.DELETE, path = "/delete")
-    public ResponseEntity<?> deleteStudentById(@RequestParam String phoneNumber) {
+    public ResponseEntity<?> deleteStudentById(@RequestParam String phoneNumber, Principal principal) {
         if (!studentService.validatePhoneNumber(phoneNumber)) {
             return ResponseEntity.badRequest().body("Invalid phone number: " + phoneNumber);
         }
 
-        studentService.deleteStudentByPhone(phoneNumber);
+        try {
+            studentService.deleteStudentByPhone(phoneNumber, principal.getName());
+        } catch (TeacherNotFoundException | StudentNotFoundException e) {
+            return new ResponseEntity<>(new ErrorHandler(404, "Student not found: " + phoneNumber), HttpStatus.NOT_FOUND);
+        } catch (InvalidTeacherCredentials e) {
+            return new ResponseEntity<>(new ErrorHandler(403, "Invalid teacher credentials: " + e.getMessage()), HttpStatus.FORBIDDEN);
+        }
 
         return ResponseEntity.noContent().build();
     }
+
+    /**
+     *
 
     @RequestMapping(method = RequestMethod.DELETE, path = "/delete-all")
     public ResponseEntity<?> deleteAllStudents() {
@@ -116,7 +122,7 @@ public class StudentController {
 
         return ResponseEntity.ok().build();
     }
-
+    */
     @PatchMapping(path = "/update")
     public ResponseEntity<?> updateStudent(@RequestParam(name = "phone") String phoneNumber, @RequestBody RequestStudentDTO requestStudentDTO) {
 

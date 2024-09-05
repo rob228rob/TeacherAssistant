@@ -82,27 +82,99 @@
                     lessonsSection.appendChild(noLessonsMessage);
                 }
 
-
                 async function renderLessons(lessons) {
                     const lessonsSection = document.querySelector('.lessons-section');
                     lessonsSection.innerHTML = ''; // Очищаем перед добавлением новых данных
 
                     lessons.forEach(lesson => {
                         const lessonCard = document.createElement('div');
-                        lessonCard.className = 'lesson-card';
+                        lessonCard.className = 'lesson-card ' + getStatusClass(lesson.lessonStatus);
 
+                        // Определяем цветовое оформление на основе статуса урока
+                        let statusColor;
+                        switch (lesson.lessonStatus) {
+                            case 'PENDING':
+                                statusColor = 'orange';
+                                break;
+                            case 'IN_PROGRESS':
+                                statusColor = 'blue';
+                                break;
+                            case 'COMPLETED':
+                                statusColor = 'green';
+                                break;
+                            case 'CANCELLED':
+                                statusColor = 'red';
+                                break;
+                            default:
+                                statusColor = 'gray';
+                        }
+
+                        // HTML-код карточки урока с отображением статуса и кнопкой отмены
                         lessonCard.innerHTML = `
-                        <h3>${lesson.title}</h3>
-                        <p><strong>Subject:</strong> ${lesson.subject}</p>
-                        <p><strong>Date:</strong> ${lesson.date}</p>
-                        <p><strong>Start Time:</strong> ${lesson.startTime}</p>
-                        <p><strong>End Time:</strong> ${lesson.endTime}</p>
-                        <p><strong>Description:</strong> ${lesson.description}</p>
-                    `;
+            <h3>${lesson.title}</h3>
+            <p><strong>Subject:</strong> ${lesson.subject}</p>
+            <p><strong>start: </strong> ${lesson.startTime}</p>
+            <p><strong>finish: </strong> ${lesson.endTime}</p>
+            <p><strong>Description:</strong> ${lesson.description}</p>
+            <p><strong>Status:</strong> <span style="color: ${statusColor};">${lesson.lessonStatus}</span></p>
+            <p><strong></strong> ${lesson.date}</p>
+            <button class="cancel-lesson-button" data-lesson-id="${lesson.id}" ${lesson.lessonStatus === 'CANCELLED' ? 'disabled' : ''}>
+                Cancel Lesson
+            </button>
+        `;
 
+                        // Добавляем карточку урока в секцию с уроками
                         lessonsSection.appendChild(lessonCard);
                     });
+
+                    // Назначаем события для кнопок отмены уроков
+                    document.querySelectorAll('.cancel-lesson-button').forEach(button => {
+                        button.addEventListener('click', async function() {
+                            const lessonId = this.getAttribute('data-lesson-id');
+                            if (confirm('Are you sure you want to cancel this lesson?')) {
+                                await cancelLesson(lessonId);
+                            }
+                        });
+                    });
                 }
+
+                function getStatusClass(status) {
+                    switch (status) {
+                        case 'PENDING':
+                            return 'status-pending';
+                        case 'IN_PROGRESS':
+                            return 'status-in-progress';
+                        case 'COMPLETED':
+                            return 'status-completed';
+                        case 'CANCELLED':
+                            return 'status-cancelled';
+                        default:
+                            return '';
+                    }
+                }
+
+                async function cancelLesson(lessonId) {
+                    try {
+                        const response = await fetch(`/api/v1/t.assist/lessons/cancel/${lessonId}`, {
+                            method: 'PATCH',
+                            headers: {
+                                'Content-Type': 'application/json',
+                            },
+                            body: JSON.stringify({ lessonStatus: 'CANCELLED' }),
+                        });
+
+                        if (response.ok) {
+                            alert('Lesson successfully cancelled!');
+                            const studentId = document.getElementById('studentId').textContent;
+                            await fetchLessons(studentId);
+                        } else {
+                            alert(`Failed to cancel lesson. Error: ${response.statusText}`);
+                        }
+                    } catch (error) {
+                        alert(`Error cancelling lesson: ${error.message}`);
+                    }
+                }
+
 
                 async function fetchPaymentInfo() {
                     try {
@@ -146,8 +218,8 @@
 
                 async function renderStudentDetails(student) {
                     document.querySelector('.student-details-card').innerHTML = `
-        <h2>${student.name} ${student.surname}</h2>
-        <p><strong>ID: </strong> <span id="studentId">${student.id}</span></p> <!-- Отображение studentId -->
+        <h2>${student.name} ${student.surname}      ID: ${student.id}</h2>
+         <p><strong>ID: </strong> <span id="studentId" style="display: none" ">${student.id}</span></p> <!-- Отображение studentId -->
         <p><strong>Phone:</strong> <span id="phone">${student.phone}</span>
             <button class="edit-button" data-field="phone">Edit</button></p>
         <p><strong>Email:</strong> <span id="email">${student.email}</span>
@@ -328,16 +400,23 @@
 
                 function renderEmptyPaymentInfoForm() {
                     document.querySelector('#payment-info-section').innerHTML = `
-                    <h3>Add Payment Information</h3>
-                    <form id="payment-info-form">
-                        <label>Price Per Hour: <input type="text" id="pricePerHour-input" required></label><br>
-                        <label>Minutes Per Lesson: <input type="text" id="minutesPerLesson-input" required></label><br>
-                        <label>Lessons Per Week: <input type="text" id="lessonsPerWeek-input" required></label><br>
-                        <button type="submit">Save Payment Info</button>
-                    </form>
-                    `;
+        <h3>Add Payment Information</h3>
+        <form id="payment-info-form" class="styled-form">
+            <label>Price Per Hour:
+                <input type="text" id="pricePerHour-input" class="styled-input" required>
+            </label><br>
+            <label>Minutes Per Lesson:
+                <input type="text" id="minutesPerLesson-input" class="styled-input" required>
+            </label><br>
+            <label>Lessons Per Week:
+                <input type="text" id="lessonsPerWeek-input" class="styled-input" required>
+            </label><br>
+            <button type="submit" class="styled-button">Save Payment Info</button>
+        </form>
+    `;
                     document.querySelector('#payment-info-form').addEventListener('submit', saveNewPaymentInfo);
                 }
+
 
                 function editPaymentField(field, paymentInfo) {
                     const fieldElement = document.getElementById(field);

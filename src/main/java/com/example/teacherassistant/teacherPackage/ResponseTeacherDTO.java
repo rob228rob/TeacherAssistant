@@ -1,4 +1,4 @@
-package com.example.teacherassistant.common.dtos;
+package com.example.teacherassistant.teacherPackage;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -6,6 +6,8 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 public class ResponseTeacherDTO {
+    private Long id;
+
     private String name;
 
     private String surname;
