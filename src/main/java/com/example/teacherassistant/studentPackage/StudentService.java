@@ -161,11 +161,7 @@ public class StudentService {
     }
 
     public boolean validatePhoneNumber(String phoneNumber) {
-        if (phoneNumber == null || phoneNumber.length() != 11) {
-            return false;
-        }
-
-        return true;
+        return phoneNumber != null && phoneNumber.length() == 11;
     }
 
     public Optional<Student> getStudentByPhoneNumber(String studentPhoneNumber) {
