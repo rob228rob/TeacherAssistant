@@ -109,6 +109,13 @@ public class LessonService {
         lessonRepository.save(lesson);
     }
 
+    @Transactional
+    public void unHideLessonDisplayingById(long lessonId) throws LessonsNotFoundException {
+        Lesson lesson = lessonRepository.findById(lessonId).orElseThrow(() -> new LessonsNotFoundException("Lesson with id " + lessonId + " not found"));
+        lesson.setHidden(false);
+        lessonRepository.save(lesson);
+    }
+
     public List<LessonResponseDTO> getAllHiddenLessonsByTeacherId(long teacherId) throws LessonsNotFoundException {
         Collection<Lesson> allLessonsByTeacherId = lessonRepository.getAllLessonsByTeacherId(teacherId);
 

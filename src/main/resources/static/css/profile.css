@@ -222,6 +222,129 @@ nav ul li a:hover {
     background-color: #ff1c1c;
 }
 
+.hidden {
+    display: none;
+}
+
+button {
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    padding: 12px 20px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+button:hover {
+    background-color: #45a049;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+button:active {
+    background-color: #3e8e41;
+    transform: translateY(1px);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+.hide-lesson-button {
+    background-color: #ff5c5c;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    font-size: 1rem;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.hide-lesson-button:hover {
+    background-color: #ff3c3c;
+    transform: translateY(-2px);
+}
+
+.unhide-lesson-button {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    font-size: 1rem;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+.lessons-section {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    padding: 30px;
+    background-color: #f4f4f4;
+}
+
+.salary-info-section {
+    background-color: #ffffff;
+    border: 1px solid #ddd;
+    border-radius: 12px;
+    padding: 25px;
+    margin: 25px auto;
+    width: 70%;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+}
+
+.toggle-hidden-lessons {
+    background-color: blue; /* Зеленый цвет фона */
+    border: none; /* Убираем бордер */
+    color: white; /* Белый цвет текста */
+    padding: 15px 32px; /* Внутренние отступы */
+    text-align: center; /* Выравнивание текста по центру */
+    text-decoration: none; /* Убираем подчеркивание текста */
+    display: inline-block; /* Отображение кнопки как строчный блок */
+    font-size: 16px; /* Размер шрифта */
+    margin: 4px 2px; /* Внешние отступы */
+    cursor: pointer; /* Курсор в виде руки при наведении */
+    border-radius: 12px; /* Скругление углов */
+    transition: background-color 0.3s, transform 0.3s; /* Плавные переходы для фона и трансформаций */
+}
+
+.toggle-hidden-lessons:hover {
+    background-color: darkblue; /* Цвет фона при наведении */
+    transform: scale(1.05); /* Немного увеличиваем кнопку при наведении */
+}
+
+.toggle-hidden-lessons:active {
+    background-color: blueviolet; /* Цвет фона при нажатии */
+    transform: scale(0.95); /* Немного уменьшаем кнопку при нажатии */
+}
+
+.unhide-lesson-button:hover {
+    background-color: #0056b3;
+    transform: translateY(-2px);
+}
+
+
+.lesson-card {
+    background-color: #ffffff;
+    border-radius: 15px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    margin: 15px;
+    transition: transform 0.3s ease-in-out, box-shadow 0.3s ease;
+    flex: 1 1 auto;
+    max-width: 100%;
+    min-width: 200px;
+}
+
+.lesson-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+}
+
+
 .lesson-card input[type="checkbox"] {
     margin-right: 10px;
     transform: scale(1.2);
@@ -272,7 +395,7 @@ nav ul li a:hover {
 }
 
 .add-student-button {
-    background-color: #4CAF50;
+    background-color: blue;
     color: white;
     padding: 10px;
     border-radius: 50%;
@@ -283,7 +406,7 @@ nav ul li a:hover {
 }
 
 .add-student-button:hover {
-    background-color: #45a049;
+    background-color: darkslateblue;
 }
 
 .students-list table {
@@ -313,7 +436,7 @@ nav ul li a:hover {
 }
 
 button {
-    background-color: #4CAF50;
+    background-color: blue;
     color: white;
     border: none;
     padding: 10px 15px;
@@ -322,6 +445,3 @@ button {
     transition: background-color 0.3s ease;
 }
 
-button:hover {
-    background-color: red;
-}

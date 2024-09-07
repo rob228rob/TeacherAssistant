@@ -11,6 +11,10 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.Caching;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
@@ -30,6 +34,7 @@ public class StudentService {
 
     private final StudentRepository studentRepository;
 
+    @CachePut(value = "studentByPhone", key = "'student_by_phone_' + #requestStudentDTO.phone")
     public boolean addStudent(RequestStudentDTO requestStudentDTO, String teacherPhone) {
         Optional<Teacher> teacherByPhone = teacherService.findTeacherByPhone(teacherPhone);
         if (teacherByPhone.isEmpty()) {
@@ -42,26 +47,34 @@ public class StudentService {
         return true;
     }
 
-    public List<Student> getAllStudents() {
-        return studentRepository.findAll().stream().toList();
-    }
-
-    public Student getStudentById(long id) throws StudentNotFoundException {
-        return studentRepository.findById(id).orElseThrow(() -> new StudentNotFoundException("Student with id: " + id + " not found"));
-    }
-
+    @CacheEvict(cacheNames = "studentById", key = "'student_by_id_' + #id")
     public void deleteStudentById(long id) {
         studentRepository.deleteById(id);
+
     }
 
-    public void deleteAllStudents() {
-        studentRepository.deleteAll();
+    @CacheEvict(value = "studentByPhone", key = "'student_by_phone_' + #phoneNumber")
+    @Transactional(rollbackOn = {StudentNotFoundException.class, TeacherNotFoundException.class, InvalidStudentDataException.class})
+    public void deleteStudentByPhone(String phoneNumber, String teacherPhone) throws TeacherNotFoundException, StudentNotFoundException, InvalidTeacherCredentials {
+        var teacher = teacherService.findTeacherByPhone(teacherPhone);
+        if (teacher.isEmpty()) {
+            throw new TeacherNotFoundException("Teacher with phone: " + teacherPhone + "not found");
+        }
+        var studentToDelete = getStudentByPhoneNumber(phoneNumber);
+        if (studentToDelete.isEmpty()) {
+            throw  new StudentNotFoundException("Student with phone: " + phoneNumber + " does not exist");
+        }
+
+        if (!teacher.get().getId().equals(studentToDelete.get().getTeacher().getId())) {
+            throw new InvalidTeacherCredentials("Invalid access to this endpoint");
+        }
+
+        studentRepository.deleteByPhone(phoneNumber);
     }
 
-    public void updateStudentById(RequestStudentDTO requestStudentDTO) {
-        Student student = modelMapper.map(requestStudentDTO, Student.class);
-
-        studentRepository.save(student);
+    @Cacheable(cacheNames = "studentById", key = "'student_by_id_' + #id")
+    public Student getStudentById(long id) throws StudentNotFoundException {
+        return studentRepository.findById(id).orElseThrow(() -> new StudentNotFoundException("Student with id: " + id + " not found"));
     }
 
     public long studentsCount() {
@@ -102,29 +115,11 @@ public class StudentService {
                 .toList();
     }
 
-    @Transactional(rollbackOn = {StudentNotFoundException.class, TeacherNotFoundException.class, InvalidStudentDataException.class})
-    public void deleteStudentByPhone(String phoneNumber, String teacherPhone) throws TeacherNotFoundException, StudentNotFoundException, InvalidTeacherCredentials {
-        var teacher = teacherService.findTeacherByPhone(teacherPhone);
-        if (teacher.isEmpty()) {
-            throw new TeacherNotFoundException("Teacher with phone: " + teacherPhone + "not found");
-        }
-        var studentToDelete = getStudentByPhoneNumber(phoneNumber);
-        if (studentToDelete.isEmpty()) {
-            throw  new StudentNotFoundException("Student with phone: " + phoneNumber + " does not exist");
-        }
-
-        if (!teacher.get().getId().equals(studentToDelete.get().getTeacher().getId())) {
-            throw new InvalidTeacherCredentials("Invalid access to this endpoint");
-        }
-
-        studentRepository.deleteByPhone(phoneNumber);
-    }
-
     public Optional<Student> findStudentByPhoneNumber(String studentPhoneNumber, String teacherPhoneNumber) {
         return studentRepository.findByPhoneAndTeacherPhoneNumber(studentPhoneNumber, teacherPhoneNumber);
     }
 
-    @Transactional
+    @Transactional()
     public void updateStudentPartly(RequestStudentDTO requestStudentDTO, String phoneNumber) throws StudentNotFoundException, InvalidStudentDataException {
         requestStudentDTO.partlyValidateStudentDTO();
 
@@ -164,6 +159,7 @@ public class StudentService {
         return phoneNumber != null && phoneNumber.length() == 11;
     }
 
+    @Cacheable(cacheNames = "studentByPhone", key = "'stuednt_by_phone_' + #studentPhoneNumber")
     public Optional<Student> getStudentByPhoneNumber(String studentPhoneNumber) {
         return studentRepository.findByPhone(studentPhoneNumber);
     }

@@ -87,4 +87,14 @@ public class LessonController {
             return new ResponseEntity<>(new ErrorHandler(404, e.getMessage()), HttpStatus.NOT_FOUND);
         }
     }
+
+    @PutMapping("/unhide/{lessonId}")
+    public ResponseEntity<?> unHideLessonById(@PathVariable long lessonId) {
+        try {
+            lessonService.unHideLessonDisplayingById(lessonId);
+            return ResponseEntity.ok().build();
+        } catch (LessonsNotFoundException e) {
+            return new ResponseEntity<>(new ErrorHandler(404, e.getMessage()), HttpStatus.NOT_FOUND);
+        }
+    }
 }
