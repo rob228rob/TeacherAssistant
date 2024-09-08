@@ -46,6 +46,7 @@ public class LessonService {
     public void updateLessonStatusToCanceled(long lessonId) throws LessonsNotFoundException {
         Lesson lesson = lessonRepository.findById(lessonId).orElseThrow(() -> new LessonsNotFoundException("Lesson with id " + lessonId + " not found"));
         lesson.cancelLesson();
+        lesson.setHidden(true);
         lessonRepository.save(lesson);
     }
 
@@ -94,12 +95,10 @@ public class LessonService {
             throw new LessonsNotFoundException("Lessons by teacher id " + teacherId + " not found");
         }
 
-        List<LessonResponseDTO> lessonsDTO = allLessonsByTeacherId.stream()
-                .peek(Lesson::updateStatus)
+        return allLessonsByTeacherId.stream()
+                //.peek(Lesson::updateStatus)
                 .map(x -> modelMapper.map(x, LessonResponseDTO.class))
                 .toList();
-
-        return lessonsDTO;
     }
 
     @Transactional

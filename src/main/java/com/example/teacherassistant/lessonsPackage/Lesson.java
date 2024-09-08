@@ -69,16 +69,13 @@ public class Lesson {
         LocalTime now = LocalTime.now();
 
         if (date.isAfter(today)) {
-
             this.status = LessonStatus.PENDING;
         } else if (date.isBefore(today)) {
-
             this.status = LessonStatus.COMPLETED;
         } else {
-
-            if (now.isBefore(startTime)) {
+            if (now.isBefore(startTime) || now.equals(startTime)) {
                 this.status = LessonStatus.PENDING;
-            } else if (now.isAfter(endTime)) {
+            } else if (now.isAfter(endTime) || now.equals(endTime)) {
                 this.status = LessonStatus.COMPLETED;
             } else {
                 this.status = LessonStatus.IN_PROGRESS;

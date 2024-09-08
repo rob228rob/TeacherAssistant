@@ -365,14 +365,15 @@ button:active {
     border-radius: 8px;
     padding: 20px;
     margin: 20px auto;
-    width: 60%;
+    width: auto;
+    max-width: 600px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
 .salary-info-section h2 {
     font-size: 24px;
     margin-bottom: 15px;
-    color: #333;
+    color: black;
 }
 
 .salary-info p {
@@ -423,7 +424,7 @@ button:active {
 
 .students-list th {
     background-color: #f4f4f4;
-    color: #333;
+    color: darkslategrey;
 }
 
 .students-list tr:hover {
@@ -436,7 +437,7 @@ button:active {
 }
 
 button {
-    background-color: blue;
+    background-color: darkslategrey;
     color: white;
     border: none;
     padding: 10px 15px;

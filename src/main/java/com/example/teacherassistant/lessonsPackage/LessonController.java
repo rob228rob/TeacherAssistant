@@ -33,7 +33,7 @@ public class LessonController {
     }
 
     @PatchMapping("/cancel/{lessonId}")
-    public ResponseEntity<?> cancelLesson(@PathVariable long lessonId) {
+    public ResponseEntity<?> cancelAndHideLesson(@PathVariable long lessonId) {
         try {
             lessonService.updateLessonStatusToCanceled(lessonId);
             return new ResponseEntity<>(HttpStatus.OK);
@@ -63,7 +63,11 @@ public class LessonController {
     @GetMapping("/get-all-by-teacher/{teacherId}")
     public ResponseEntity<?> getAllLessonsByStudentByTeacher(@PathVariable long teacherId) {
         try {
-            return new ResponseEntity<>(lessonService.getAllLessonsByTeacherId(teacherId), HttpStatus.OK);
+            var resultList = lessonService.getAllLessonsByTeacherId(teacherId);
+            log.info("\n----------\n---------\n---------");
+            resultList.forEach(lesson -> log.info(lesson.toString()));
+            log.info("\n----------\n---------\n---------");
+            return new ResponseEntity<>(resultList, HttpStatus.OK);
         } catch (LessonsNotFoundException e) {
             return new ResponseEntity<>(new ErrorHandler(404, e.getMessage()), HttpStatus.NOT_FOUND);
         }
