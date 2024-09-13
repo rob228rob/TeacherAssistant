@@ -6,12 +6,14 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.io.Serializable;
+
 @Getter
 @Setter
 @Table(name = "student_payment")
 @Entity(name = "student_payment")
 @NoArgsConstructor
-public class PaymentInfo {
+public class PaymentInfo implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -31,7 +33,7 @@ public class PaymentInfo {
     private int lessonsPerWeek;
 
     public double calculatePricePerMonth() {
-        //TODO: need to up calc method with calendar
+        //preTODO: need to up calc method with calendar
 
         return calculatePricePerWeek() * 4;
     }

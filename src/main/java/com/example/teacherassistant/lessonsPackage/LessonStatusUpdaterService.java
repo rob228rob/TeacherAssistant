@@ -1,6 +1,8 @@
 package com.example.teacherassistant.lessonsPackage;
 
+import com.example.teacherassistant.studentPackage.StudentRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -16,7 +18,7 @@ public class LessonStatusUpdaterService {
 
     private final LessonRepository lessonRepository;
 
-    @Scheduled(fixedRate = 900000)
+    @Scheduled(fixedRateString = "${app.rate.update-time}")
     @Transactional
     public void updateLessonStatuses() {
         var allLessons = lessonRepository.findAll()

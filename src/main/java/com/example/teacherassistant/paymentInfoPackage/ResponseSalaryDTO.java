@@ -1,8 +1,8 @@
-package com.example.teacherassistant.common.dtos;
+package com.example.teacherassistant.paymentInfoPackage;
 
 import lombok.*;
-import org.hibernate.annotations.Bag;
-import org.springframework.web.bind.annotation.GetMapping;
+
+import java.math.BigDecimal;
 
 @Getter
 @Setter
@@ -16,4 +16,21 @@ public class ResponseSalaryDTO {
     private double weeklySalary;
 
     private int lessonsPerMonth;
+
+    private BigDecimal averageSalaryPerLesson;
+
+    public void updateAverageSalaryPerLesson() {
+        if (averageSalaryPerLesson != null && lessonsPerMonth > 0) {
+            averageSalaryPerLesson = BigDecimal.valueOf(monthlySalary / lessonsPerMonth);
+        } else if (lessonsPerMonth > 0) {
+            averageSalaryPerLesson = new BigDecimal(monthlySalary / lessonsPerMonth);
+        }
+    }
+
+    public ResponseSalaryDTO(double monthlySalary, double weeklySalary, int lessonsPerMonth) {
+        this.monthlySalary = monthlySalary;
+        this.weeklySalary = weeklySalary;
+        this.lessonsPerMonth = lessonsPerMonth;
+        this.averageSalaryPerLesson = BigDecimal.ZERO;
+    }
 }

@@ -46,28 +46,24 @@ public class StudentController {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
 
-        boolean addedSuccessfully = studentService.addStudent(requestStudentDTO, principal.getName());
-
-        //TODO: !!! Rewrite with informative error message
-        return addedSuccessfully
-                ? ResponseEntity.ok().build()
-                : new ResponseEntity<>(new ErrorHandler(400, "Adding was interrupted"), HttpStatus.NOT_FOUND);
+        try {
+            studentService.addStudent(requestStudentDTO, principal.getName());
+            return new ResponseEntity<>(HttpStatus.CREATED);
+        } catch (TeacherNotFoundException e) {
+            return new ResponseEntity<>(new ErrorHandler(404, e.getMessage()), HttpStatus.NOT_FOUND);
+        }
     }
 
-    @RequestMapping(method = RequestMethod.GET, path = "/get/{phone_number}")
-    public ResponseEntity<?> getStudentByPhoneNumber(@PathVariable String phone_number, Principal principal) {
-        var studentById = studentService.findStudentByPhoneNumber(phone_number, principal.getName());
-        if (studentById.isEmpty()) {
-            return ResponseEntity.notFound().build();
+    @RequestMapping(method = RequestMethod.GET, path = "/get/{studentId}")
+    public ResponseEntity<?> getStudentByPhoneNumber(@PathVariable long studentId, Principal principal) {
+        try {
+            ResponseStudentDTO studentDTO = studentService.getStudentByIdReturningDTO(studentId, principal.getName());
+            return new ResponseEntity<>(studentDTO, HttpStatus.OK);
+        } catch (StudentNotFoundException e) {
+            return new ResponseEntity<>(new ErrorHandler(404, "Student with this id does not exist: " + studentId), HttpStatus.NOT_FOUND);
+        } catch (InvalidTeacherCredentials e) {
+            return new ResponseEntity<>(new ErrorHandler(403, "Invalid teacher credentials: " + e.getMessage()), HttpStatus.FORBIDDEN);
         }
-
-        var requestStudentDTO = modelMapper.map(studentById.get(), ResponseStudentDTO.class);
-        List<Long> listImagesIds = studentById.get().getStudentImages().stream()
-                .map(StudentImage::getId)
-                .toList();
-        requestStudentDTO.setImageIds(listImagesIds);
-
-        return ResponseEntity.ok(requestStudentDTO);
     }
 
     @RequestMapping(method = RequestMethod.GET, path = "/get-all")
@@ -84,15 +80,11 @@ public class StudentController {
     }
 
     @RequestMapping(method = RequestMethod.DELETE, path = "/delete")
-    public ResponseEntity<?> deleteStudentById(@RequestParam String phoneNumber, Principal principal) {
-        if (!studentService.validatePhoneNumber(phoneNumber)) {
-            return ResponseEntity.badRequest().body("Invalid phone number: " + phoneNumber);
-        }
-
+    public ResponseEntity<?> deleteStudentById(@RequestParam long studentId, Principal principal) {
         try {
-            studentService.deleteStudentByPhone(phoneNumber, principal.getName());
-        } catch (TeacherNotFoundException | StudentNotFoundException e) {
-            return new ResponseEntity<>(new ErrorHandler(404, "Student not found: " + phoneNumber), HttpStatus.NOT_FOUND);
+            studentService.deleteStudentById(studentId, principal.getName());
+        } catch (TeacherNotFoundException e) {
+            return new ResponseEntity<>(new ErrorHandler(HttpStatus.NOT_FOUND.value(), "Teacher not found: " + principal.getName()), HttpStatus.NOT_FOUND);
         } catch (InvalidTeacherCredentials e) {
             return new ResponseEntity<>(new ErrorHandler(403, "Invalid teacher credentials: " + e.getMessage()), HttpStatus.FORBIDDEN);
         }
@@ -100,38 +92,12 @@ public class StudentController {
         return ResponseEntity.noContent().build();
     }
 
-    /**
-     *
-
-    @RequestMapping(method = RequestMethod.DELETE, path = "/delete-all")
-    public ResponseEntity<?> deleteAllStudents() {
-        if (studentService.studentsCount() > 0) {
-            studentService.deleteAllStudents();
-        }
-
-        return ResponseEntity.ok().build();
-    }
-
-    @RequestMapping(method = RequestMethod.DELETE, path = "/delete-by-ids")
-    public ResponseEntity<?> deleteStudentsByIds(@RequestBody Collection<Long> ids) {
-        if (ids.isEmpty()) {
-            return ResponseEntity.noContent().build();
-        }
-
-        ids.forEach(studentService::deleteStudentById);
-
-        return ResponseEntity.ok().build();
-    }
-    */
     @PatchMapping(path = "/update")
-    public ResponseEntity<?> updateStudent(@RequestParam(name = "phone") String phoneNumber, @RequestBody RequestStudentDTO requestStudentDTO) {
-
-        if (!studentService.validatePhoneNumber(phoneNumber)) {
-            return ResponseEntity.badRequest().body("Invalid phone number: " + phoneNumber);
-        }
-
+    public ResponseEntity<?> updateStudent(@RequestParam(name = "student_id") long studentId,
+                                           @RequestBody RequestStudentDTO requestStudentDTO,
+                                           Principal principal) {
         try {
-            studentService.updateStudentPartly(requestStudentDTO, phoneNumber);
+            studentService.updateStudentPartly(requestStudentDTO, studentId, principal.getName());
             return ResponseEntity.ok().build();
         } catch (StudentNotFoundException e) {
             return ResponseEntity.notFound().build();
@@ -140,37 +106,30 @@ public class StudentController {
         }
     }
 
-    @GetMapping("/payment-info/{phone}")
-    public ResponseEntity<?> getPaymentInfo(@PathVariable String phone) {
-        if (!studentService.validatePhoneNumber(phone)) {
-            return ResponseEntity.badRequest().body("Invalid phone number: " + phone);
-        }
-
+    @GetMapping("/payment-info/{studentId}")
+    public ResponseEntity<?> getPaymentInfoByStudentId(@PathVariable long studentId) {
         try {
-            var paymentInfoDTO = paymentInfoService.getStudentPaymentInfoByTeacherPhone(phone);
+            var paymentInfoDTO = paymentInfoService.getStudentPaymentInfoByStudentId(studentId);
             if (paymentInfoDTO.isPresent()) {
                 return new ResponseEntity<>(paymentInfoDTO, HttpStatus.OK);
             } else {
-                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+                return new ResponseEntity<>(new ErrorHandler(404, "Payment info of student with id: " + studentId + " not found"), HttpStatus.NOT_FOUND);
             }
         } catch (StudentNotFoundException e) {
             return ResponseEntity.notFound().build();
         }
     }
 
-    @PostMapping("/payment-info/{phone}")
-    public ResponseEntity<?> addPaymentInfo(@PathVariable String phone, @RequestBody PaymentInfoDTO paymentInfoDTO) {
-        if (!studentService.validatePhoneNumber(phone)) {
-            return ResponseEntity.badRequest().body("Invalid phone number: " + phone);
-        }
-
+    @PostMapping("/payment-info/{studentId}")
+    public ResponseEntity<?> addPaymentInfo(
+            @PathVariable long studentId,
+            @RequestBody PaymentInfoDTO paymentInfoDTO) {
         try {
             paymentInfoDTO.validatePaymentInfoDTO();
-            paymentInfoService.savePaymentInfo(paymentInfoDTO, phone);
+            paymentInfoService.savePaymentInfoByStudentId(paymentInfoDTO, studentId);
             return new ResponseEntity<>(HttpStatus.CREATED);
         } catch (InvalidPaymentInfoDataException | StudentNotFoundException e) {
             return new ResponseEntity<>(new ErrorHandler(400, "Invalid payment info: " + e.getMessage()), HttpStatus.BAD_REQUEST);
         }
     }
-
 }

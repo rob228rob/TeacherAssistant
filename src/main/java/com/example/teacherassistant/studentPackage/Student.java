@@ -33,7 +33,7 @@ public class Student implements Serializable {
     @Column(name = "description")
     private String purposeDescription;
 
-    @Column(name = "email", nullable = true, unique = true)
+    @Column(name = "email", nullable = true)
     private String email;
     
     @ManyToOne(fetch = FetchType.LAZY)

@@ -35,22 +35,28 @@ public class StudentService {
     private final StudentRepository studentRepository;
 
     @CachePut(value = "studentByPhone", key = "'student_by_phone_' + #requestStudentDTO.phone")
-    public boolean addStudent(RequestStudentDTO requestStudentDTO, String teacherPhone) {
+    public void addStudent(RequestStudentDTO requestStudentDTO, String teacherPhone) throws TeacherNotFoundException {
         Optional<Teacher> teacherByPhone = teacherService.findTeacherByPhone(teacherPhone);
         if (teacherByPhone.isEmpty()) {
-            return false;
+            throw new TeacherNotFoundException("Teacher with phone number: " + teacherPhone + " not found");
         }
         Student student = modelMapper.map(requestStudentDTO, Student.class);
         student.setTeacher(teacherByPhone.get());
         studentRepository.save(student);
-
-        return true;
     }
 
     @CacheEvict(cacheNames = "studentById", key = "'student_by_id_' + #id")
-    public void deleteStudentById(long id) {
-        studentRepository.deleteById(id);
+    public void deleteStudentById(long id, String teacherPhone) throws TeacherNotFoundException, InvalidTeacherCredentials {
+        Optional<Teacher> teacherByStudentId = studentRepository.findTeacherByStudentId(id);
+        if (teacherByStudentId.isEmpty()) {
+            throw new TeacherNotFoundException("Teacher with phone: " + teacherPhone + " not found");
+        }
 
+        if (!teacherByStudentId.get().getPhoneNumber().equals(teacherPhone)) {
+            throw new InvalidTeacherCredentials("Teacher with phone: " + teacherPhone + " has no access");
+        }
+
+        studentRepository.deleteById(id);
     }
 
     @CacheEvict(value = "studentByPhone", key = "'student_by_phone_' + #phoneNumber")
@@ -120,16 +126,12 @@ public class StudentService {
     }
 
     @Transactional()
-    public void updateStudentPartly(RequestStudentDTO requestStudentDTO, String phoneNumber) throws StudentNotFoundException, InvalidStudentDataException {
+    public void updateStudentPartly(RequestStudentDTO requestStudentDTO, long studentId, String phoneNumber) throws StudentNotFoundException, InvalidStudentDataException {
         requestStudentDTO.partlyValidateStudentDTO();
 
-        Optional<Student> optionalStudent = studentRepository.findByPhone(phoneNumber);
+        Optional<Student> optionalStudent = studentRepository.findById(studentId);
         if (optionalStudent.isEmpty()) {
             throw new StudentNotFoundException("Student with phone number: " + phoneNumber + " not found.");
-        }
-
-        if (requestStudentDTO.getEmail() != null) {
-            System.out.println("current email for upd: " + requestStudentDTO.getEmail());
         }
 
         Student student = optionalStudent.get();
@@ -170,5 +172,23 @@ public class StudentService {
 
     public Teacher findTeacherByStudentId(long studentId) throws StudentNotFoundException {
         return studentRepository.findTeacherByStudentId(studentId).orElseThrow(() -> new StudentNotFoundException("Student with id: " + studentId + " not found"));
+    }
+
+    public ResponseStudentDTO getStudentByIdReturningDTO(long studentId, String teacherPhoneNumber) throws StudentNotFoundException, InvalidTeacherCredentials {
+        Student student = studentRepository.findById(studentId).orElseThrow(() -> new StudentNotFoundException("Student with id: " + studentId + " not found"));
+
+        if (!student.getTeacher().getPhoneNumber().equals(teacherPhoneNumber)) {
+            throw new InvalidTeacherCredentials("Invalid credentials for this student");
+        }
+
+        List<Long> imageIds = student.getStudentImages()
+                .stream()
+                .map(StudentImage::getId)
+                .toList();
+
+        ResponseStudentDTO studentDTO = modelMapper.map(student, ResponseStudentDTO.class);
+        studentDTO.setImageIds(imageIds);
+
+        return studentDTO;
     }
 }

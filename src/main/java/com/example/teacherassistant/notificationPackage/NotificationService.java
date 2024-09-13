@@ -1,4 +1,4 @@
-package com.example.teacherassistant.notificationPackage.Notification;
+package com.example.teacherassistant.notificationPackage;
 
 public class NotificationService {
 }
