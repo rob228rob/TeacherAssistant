@@ -13,13 +13,13 @@ import java.io.Serializable;
 @Table(name = "student_payment")
 @Entity(name = "student_payment")
 @NoArgsConstructor
-public class PaymentInfo implements Serializable {
+public class PaymentInfo {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    @OneToOne()
+    @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "student_id", referencedColumnName = "id")
     private Student student;
 

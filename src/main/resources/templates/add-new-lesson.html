@@ -77,7 +77,6 @@
     async function submitLesson() {
         const lessonForm = document.getElementById('lessonForm');
         const formData = new FormData(lessonForm);
-и
         const lessonRequestDTO = {
             studentId: formData.get('studentId'),
             title: formData.get('title'),

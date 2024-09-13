@@ -1,6 +1,7 @@
 package com.example.teacherassistant.paymentInfoPackage;
 
 import com.example.teacherassistant.common.dtos.PaymentInfoDTO;
+import com.example.teacherassistant.common.myExceptions.StudentAlreadyExistException;
 import com.example.teacherassistant.studentPackage.Student;
 import com.example.teacherassistant.common.myExceptions.StudentNotFoundException;
 import com.example.teacherassistant.common.myExceptions.TeacherNotFoundException;
@@ -39,7 +40,10 @@ public class PaymentInfoService {
     public Optional<PaymentInfoDTO> getStudentPaymentInfoByStudentId(long studentId) throws StudentNotFoundException {
         return Optional.of(
                 modelMapper.map(
-                        paymentInfoRepository.findById(studentId).orElseThrow(
+                        paymentInfoRepository.findPaymentInfoByStudentId(studentId)
+                                .stream()
+                                .reduce((first, second) -> second)
+                                .orElseThrow(
                                 () -> new StudentNotFoundException("Student with id: " + studentId + " not found")
                         ),
                         PaymentInfoDTO.class)
@@ -97,5 +101,10 @@ public class PaymentInfoService {
         System.out.println("---------------------------");
 
         return Optional.of(responseSalaryDTO);
+    }
+
+    @Transactional
+    public void deleteAllRecordsByStudentId(long studentId) {
+        paymentInfoRepository.deleteAllByStudentId(studentId);
     }
 }

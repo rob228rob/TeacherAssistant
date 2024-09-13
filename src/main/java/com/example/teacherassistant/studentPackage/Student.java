@@ -41,7 +41,7 @@ public class Student implements Serializable {
     private Teacher teacher;
 
     @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "payment_info_id", referencedColumnName = "id")
+    @JoinColumn(name = "payment_info_id", referencedColumnName = "id", unique = true)
     private PaymentInfo paymentInfo;
 
     @OneToMany(mappedBy = "student", cascade = CascadeType.ALL, fetch = FetchType.LAZY)

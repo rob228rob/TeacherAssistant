@@ -30,7 +30,6 @@ public class LessonService {
 
     private final TeacherService teacherService;
 
-   // @CacheEvict(value = "lessonsByTeacherId", key = "'lessons_by_teacher_' + #teacher.id")
     public LessonResponseDTO addNewLessonByStudent(LessonRequestDTO lessonDTO) throws StudentNotFoundException {
         long studentId = lessonDTO.getStudentId();
         Lesson lesson = modelMapper.map(lessonDTO, Lesson.class);
@@ -54,8 +53,7 @@ public class LessonService {
         return modelMapper.map(lessonRepository.findById(lessonId), LessonResponseDTO.class);
     }
 
-   // @Cacheable(value = "lessonsByStudentId", key = "'all_lessons_by_student_' + #studentId")
-    public Collection<LessonResponseDTO> getAllLessonsByStudentId(long studentId) throws StudentNotFoundException, LessonsNotFoundException {
+   public Collection<LessonResponseDTO> getAllLessonsByStudentId(long studentId) throws StudentNotFoundException, LessonsNotFoundException {
         if (!studentService.checkIfStudentExistById(studentId)) {
             throw new StudentNotFoundException("Student with studentId " + studentId + " not found");
         }
@@ -71,8 +69,7 @@ public class LessonService {
                 .toList();
     }
 
-   // @Cacheable(value = "lessonsSortedByStudentId", key = "'sorted_lessons_by_student_' + #studentId")
-    public List<LessonResponseDTO> getAllLessonsByStudentIdOrderByTime(long studentId) throws LessonsNotFoundException, StudentNotFoundException {
+   public List<LessonResponseDTO> getAllLessonsByStudentIdOrderByTime(long studentId) throws LessonsNotFoundException, StudentNotFoundException {
         if (!studentService.checkIfStudentExistById(studentId)) {
             throw new StudentNotFoundException("Student with studentId " + studentId + " not found");
         }
@@ -87,7 +84,6 @@ public class LessonService {
                 .toList();
     }
 
-    //@Cacheable(value = "lessonsByTeacherId", key = "'lessons_by_teacher_' + #teacherId")
     public List<LessonResponseDTO> getAllLessonsByTeacherId(long teacherId) throws LessonsNotFoundException {
         Collection<Lesson> allLessonsByTeacherId = lessonRepository.getAllLessonsByTeacherId(teacherId);
 
@@ -96,7 +92,7 @@ public class LessonService {
         }
 
         return allLessonsByTeacherId.stream()
-                //.peek(Lesson::updateStatus)
+                .peek(Lesson::updateStatus)
                 .map(x -> modelMapper.map(x, LessonResponseDTO.class))
                 .toList();
     }

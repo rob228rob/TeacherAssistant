@@ -120,16 +120,24 @@ public class StudentController {
         }
     }
 
+    @DeleteMapping("/payment-info/{studentId}/delete-all")
+    public ResponseEntity<?> deletePaymentInfoByStudentId(@PathVariable long studentId) {
+        paymentInfoService.deleteAllRecordsByStudentId(studentId);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
     @PostMapping("/payment-info/{studentId}")
     public ResponseEntity<?> addPaymentInfo(
             @PathVariable long studentId,
             @RequestBody PaymentInfoDTO paymentInfoDTO) {
         try {
             paymentInfoDTO.validatePaymentInfoDTO();
-            paymentInfoService.savePaymentInfoByStudentId(paymentInfoDTO, studentId);
-            return new ResponseEntity<>(HttpStatus.CREATED);
+            var optionalPaymentInfoDTO = paymentInfoService.savePaymentInfoByStudentId(paymentInfoDTO, studentId);
+            return new ResponseEntity<>(optionalPaymentInfoDTO.get(), HttpStatus.CREATED);
         } catch (InvalidPaymentInfoDataException | StudentNotFoundException e) {
             return new ResponseEntity<>(new ErrorHandler(400, "Invalid payment info: " + e.getMessage()), HttpStatus.BAD_REQUEST);
+        } catch (Exception e) {
+            return new ResponseEntity<>(new ErrorHandler(400, e.getMessage()), HttpStatus.BAD_REQUEST);
         }
     }
 }

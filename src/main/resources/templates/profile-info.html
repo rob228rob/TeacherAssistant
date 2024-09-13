@@ -37,7 +37,7 @@
                         if (response.ok) {
                             const student = await response.json();
                             await renderStudentDetails(student);
-                            await fetchPaymentInfo();
+                            await fetchPaymentInfo(student.id);
                             await fetchLessons(student.id);
                         } else {
                             console.error('Error fetching student details:', response.statusText);
@@ -178,7 +178,17 @@
                 }
 
 
-                async function fetchPaymentInfo() {
+                async function fetchPaymentInfo(studentId) {
+                    const deleteAllPaymentInfo = async (studentId) => {
+                        const response = await fetch(paymentInfoUrl + "/delete-all",
+                            {
+                                method: 'DELETE',
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                },
+                            },
+                        )
+                    };
                     try {
                         const response = await fetch(paymentInfoUrl, {
                             method: 'GET',
@@ -192,7 +202,10 @@
                             renderPaymentInfo(paymentInfo);
                         } else if (response.status === 404) {
                             renderEmptyPaymentInfoForm();
-                        } else {
+                        } else if (response.status === 500) {
+                            deleteAllPaymentInfo(studentId);
+                        }
+                        else {
                             console.error('Error fetching payment info:', response.statusText);
                         }
                     } catch (error) {

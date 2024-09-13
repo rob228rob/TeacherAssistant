@@ -1,11 +1,8 @@
 package com.example.teacherassistant.studentPackage;
 
-import com.example.teacherassistant.common.myExceptions.InvalidTeacherCredentials;
+import com.example.teacherassistant.common.myExceptions.*;
 import com.example.teacherassistant.imagePackage.StudentImage;
 import com.example.teacherassistant.teacherPackage.Teacher;
-import com.example.teacherassistant.common.myExceptions.InvalidStudentDataException;
-import com.example.teacherassistant.common.myExceptions.StudentNotFoundException;
-import com.example.teacherassistant.common.myExceptions.TeacherNotFoundException;
 import com.example.teacherassistant.teacherPackage.TeacherService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -34,7 +31,6 @@ public class StudentService {
 
     private final StudentRepository studentRepository;
 
-    @CachePut(value = "studentByPhone", key = "'student_by_phone_' + #requestStudentDTO.phone")
     public void addStudent(RequestStudentDTO requestStudentDTO, String teacherPhone) throws TeacherNotFoundException {
         Optional<Teacher> teacherByPhone = teacherService.findTeacherByPhone(teacherPhone);
         if (teacherByPhone.isEmpty()) {
@@ -45,7 +41,6 @@ public class StudentService {
         studentRepository.save(student);
     }
 
-    @CacheEvict(cacheNames = "studentById", key = "'student_by_id_' + #id")
     public void deleteStudentById(long id, String teacherPhone) throws TeacherNotFoundException, InvalidTeacherCredentials {
         Optional<Teacher> teacherByStudentId = studentRepository.findTeacherByStudentId(id);
         if (teacherByStudentId.isEmpty()) {
@@ -59,7 +54,6 @@ public class StudentService {
         studentRepository.deleteById(id);
     }
 
-    @CacheEvict(value = "studentByPhone", key = "'student_by_phone_' + #phoneNumber")
     @Transactional(rollbackOn = {StudentNotFoundException.class, TeacherNotFoundException.class, InvalidStudentDataException.class})
     public void deleteStudentByPhone(String phoneNumber, String teacherPhone) throws TeacherNotFoundException, StudentNotFoundException, InvalidTeacherCredentials {
         var teacher = teacherService.findTeacherByPhone(teacherPhone);
@@ -78,7 +72,6 @@ public class StudentService {
         studentRepository.deleteByPhone(phoneNumber);
     }
 
-    @Cacheable(cacheNames = "studentById", key = "'student_by_id_' + #id")
     public Student getStudentById(long id) throws StudentNotFoundException {
         return studentRepository.findById(id).orElseThrow(() -> new StudentNotFoundException("Student with id: " + id + " not found"));
     }
@@ -96,6 +89,14 @@ public class StudentService {
         boolean existByNameAndSurname = studentRepository.existsByNameAndSurname(requestStudentDTO.getName(), requestStudentDTO.getSurname());
 
         return existByEmail || existByNameAndSurname;
+    }
+
+    public void checkIfStudentExist(Long id) throws StudentAlreadyExistException {
+        if (studentRepository.existsById(id)) {
+            throw new StudentAlreadyExistException("Student with id: " + id + " already exist");
+        }
+
+        return;
     }
 
     public Collection<Student> getCollectionStudentsByTeacherPhone(String teacherPhone) {
@@ -161,7 +162,6 @@ public class StudentService {
         return phoneNumber != null && phoneNumber.length() == 11;
     }
 
-    @Cacheable(cacheNames = "studentByPhone", key = "'stuednt_by_phone_' + #studentPhoneNumber")
     public Optional<Student> getStudentByPhoneNumber(String studentPhoneNumber) {
         return studentRepository.findByPhone(studentPhoneNumber);
     }

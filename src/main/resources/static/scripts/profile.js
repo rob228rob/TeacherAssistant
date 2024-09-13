@@ -27,6 +27,7 @@ document.addEventListener('DOMContentLoaded', async function () {
         }
     }
 
+    //TODO: download photo to local filesystem
     const defaultAvatarUrl = 'https://hostenko.com/wpcafe/wp-content/uploads/wpavatar.webp';
 
     function renderStudents(students) {
@@ -46,7 +47,7 @@ document.addEventListener('DOMContentLoaded', async function () {
             <td>${student.phone}</td>
             <td>${student.grade} класс</td>
             <td>
-                <a href="/profile/info?phone=${student.phone}">
+                <a href="/profile/info?id=${student.id}&phone=${student.phone}">
                     <button>View Details</button>
                 </a>
                 <button onclick="deleteStudent('${student.phone}')">Delete</button>
@@ -73,10 +74,10 @@ document.addEventListener('DOMContentLoaded', async function () {
         }
     }
 
-    window.deleteStudent = async function (phoneNumber) {
+    window.deleteStudent = async function (studentId) {
         if (confirm('Are you sure you want to delete this student?')) {
             try {
-                const response = await fetch(`${apiUrl}/delete?phoneNumber=${phoneNumber}`, {
+                const response = await fetch(`${apiUrl}/delete?studentId=${studentId}`, {
                     method: 'DELETE',
                     headers: {
                         'Content-Type': 'application/json',
@@ -117,16 +118,19 @@ document.addEventListener('DOMContentLoaded', async function () {
     }
 
     function renderSalaryInfo(info) {
-        const monthlySalary = info.monthlySalary;//(info.pricePerHour * info.* info.minutesPerLesson / 60 * info.lessonsPerWeek * 4).toFixed(2);
-        const weeklySalary = info.weeklySalary;//(info.pricePerHour * info.minutesPerLesson / 60 * info.lessonsPerWeek).toFixed(2);
-        const lessonsPerMonth = info.lessonsPerMonth; //info.lessonsPerWeek * 4;
+        const monthlySalary = info.monthlySalary;
+        const weeklySalary = info.weeklySalary;
+        const lessonsPerMonth = info.lessonsPerMonth;
         const lessonsPerWeek = info.lessonsPerMonth / 4;
+        const averageSalaryPerLesson = info.averageSalaryPerLesson; // Новое поле
 
-        document.getElementById('monthly-salary').textContent = `${monthlySalary} рублей`;
-        document.getElementById('weekly-salary').textContent = `${weeklySalary} рублей`;
+        document.getElementById('monthly-salary').textContent = `${monthlySalary}  RUB`;
+        document.getElementById('weekly-salary').textContent = `${weeklySalary} RUB`;
         document.getElementById('lessons-per-month').textContent = lessonsPerMonth;
         document.getElementById('lessons-per-week').textContent = lessonsPerWeek;
+        document.getElementById('average-salary-per-lesson').textContent = `${averageSalaryPerLesson} RUB per lesson`;
     }
+
 
     const currentTeacherApiUrl = '/api/v1/t.assist/teachers/current';
     const lessonsApiUrl = '/api/v1/t.assist/lessons/get-all-by-teacher';
