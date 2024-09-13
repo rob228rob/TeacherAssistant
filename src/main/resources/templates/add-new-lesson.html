@@ -75,11 +75,9 @@
     });
 
     async function submitLesson() {
-        // Получаем данные из формы
         const lessonForm = document.getElementById('lessonForm');
         const formData = new FormData(lessonForm);
-
-        // Формируем объект для отправки
+и
         const lessonRequestDTO = {
             studentId: formData.get('studentId'),
             title: formData.get('title'),
@@ -101,7 +99,7 @@
 
             if (response.ok) {
                 alert('Lesson added successfully!');
-                window.location.href = `/profile/${lessonRequestDTO.studentId}`;
+                window.location.href = `/profile/info?id=${lessonRequestDTO.studentId}`;
             } else {
                 alert('Failed to add lesson.');
             }

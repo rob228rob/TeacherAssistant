@@ -17,15 +17,17 @@
                 return decodeURIComponent(results[2].replace(/\+/g, ' '));
             }
 
+            const studentId = getParameterByName('id');
             const phoneNumber = getParameterByName('phone');
-            if (phoneNumber) {
-                const apiUrl = `/api/v1/t.assist/students/get/${phoneNumber}`;
-                const updateUrl = `/api/v1/t.assist/students/update?phone=${phoneNumber}`;
-                const paymentInfoUrl = `/api/v1/t.assist/students/payment-info/${phoneNumber}`;
+            if (studentId) {
+                const apiUrlById = `/api/v1/t.assist/students/get/${studentId}`
+                const apiUrl = `/api/v1/t.assist/students/get/${studentId}`;
+                const updateUrl = `/api/v1/t.assist/students/update?student_id=${studentId}`;
+                const paymentInfoUrl = `/api/v1/t.assist/students/payment-info/${studentId}`;
 
                 async function fetchStudentDetails() {
                     try {
-                        const response = await fetch(apiUrl, {
+                        const response = await fetch(apiUrlById, {
                             method: 'GET',
                             headers: {
                                 'Content-Type': 'application/json',
@@ -35,7 +37,7 @@
                         if (response.ok) {
                             const student = await response.json();
                             await renderStudentDetails(student);
-                            await fetchPaymentInfo();  // Загрузка информации о платеже
+                            await fetchPaymentInfo();
                             await fetchLessons(student.id);
                         } else {
                             console.error('Error fetching student details:', response.statusText);
