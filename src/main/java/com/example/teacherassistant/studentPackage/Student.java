@@ -6,6 +6,7 @@ import com.example.teacherassistant.teacherPackage.Teacher;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.Cascade;
 
 import java.io.Serializable;
 import java.util.List;
@@ -36,11 +37,12 @@ public class Student implements Serializable {
     @Column(name = "email", nullable = true)
     private String email;
     
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "teacher_id")
     private Teacher teacher;
 
-    @OneToOne(cascade = CascadeType.ALL)
+    @Cascade(org.hibernate.annotations.CascadeType.ALL)
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "payment_info_id", referencedColumnName = "id")
     private PaymentInfo paymentInfo;
 

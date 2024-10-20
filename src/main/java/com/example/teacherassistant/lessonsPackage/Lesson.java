@@ -4,6 +4,7 @@ import com.example.teacherassistant.studentPackage.Student;
 import com.example.teacherassistant.teacherPackage.Teacher;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.Cascade;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -44,11 +45,13 @@ public class Lesson {
     @Column(name = "is_hidden")
     private boolean isHidden;
 
-    @ManyToOne
+    @Cascade(org.hibernate.annotations.CascadeType.ALL)
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "teacher_id")
     private Teacher teacher;
 
-    @ManyToOne
+    @Cascade(org.hibernate.annotations.CascadeType.ALL)
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "student_id")
     private Student student;
 

@@ -16,12 +16,12 @@
                 if (!results[2]) return '';
                 return decodeURIComponent(results[2].replace(/\+/g, ' '));
             }
-
+            const studId = getParameterByName('id');
             const phoneNumber = getParameterByName('phone');
             if (phoneNumber) {
-                const apiUrl = `/api/v1/t.assist/students/get/${phoneNumber}`;
-                const updateUrl = `/api/v1/t.assist/students/update?phone=${phoneNumber}`;
-                const paymentInfoUrl = `/api/v1/t.assist/students/payment-info/${phoneNumber}`;
+                const apiUrl = `/api/v1/t.assist/students/get/${studId}`;
+                const updateUrl = `/api/v1/t.assist/students/update?phone=${studId}`;
+                const paymentInfoUrl = `/api/v1/t.assist/students/payment-info/${studId}`;
 
                 async function fetchStudentDetails() {
                     try {

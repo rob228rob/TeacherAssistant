@@ -18,7 +18,7 @@ public class LessonStatusUpdaterService {
 
     private final LessonRepository lessonRepository;
 
-    @Scheduled(fixedRateString = "${app.rate.update-time}")
+    @Scheduled(fixedRate = 30000)
     @Transactional
     public void updateLessonStatuses() {
         var allLessons = lessonRepository.findAll()

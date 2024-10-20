@@ -80,7 +80,7 @@ public class StudentController {
     }
 
     @RequestMapping(method = RequestMethod.DELETE, path = "/delete")
-    public ResponseEntity<?> deleteStudentById(@RequestParam long studentId, Principal principal) {
+    public ResponseEntity<?> deleteStudentById(@RequestParam("id") long studentId, Principal principal) {
         try {
             studentService.deleteStudentById(studentId, principal.getName());
         } catch (TeacherNotFoundException e) {

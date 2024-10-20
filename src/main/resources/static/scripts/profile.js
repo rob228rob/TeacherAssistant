@@ -46,10 +46,10 @@ document.addEventListener('DOMContentLoaded', async function () {
             <td>${student.phone}</td>
             <td>${student.grade} класс</td>
             <td>
-                <a href="/profile/info?phone=${student.phone}">
+                <a href="/profile/info?phone=${student.phone}&id=${student.id}">
                     <button>View Details</button>
                 </a>
-                <button onclick="deleteStudent('${student.phone}')">Delete</button>
+                <button onclick="deleteStudent('${student.id}')">Delete</button>
             </td>
         `;
             tableBody.appendChild(row);
@@ -73,10 +73,10 @@ document.addEventListener('DOMContentLoaded', async function () {
         }
     }
 
-    window.deleteStudent = async function (phoneNumber) {
+    window.deleteStudent = async function(id) {
         if (confirm('Are you sure you want to delete this student?')) {
             try {
-                const response = await fetch(`${apiUrl}/delete?phoneNumber=${phoneNumber}`, {
+                const response = await fetch(`${apiUrl}/delete?id=${id}`, {
                     method: 'DELETE',
                     headers: {
                         'Content-Type': 'application/json',
